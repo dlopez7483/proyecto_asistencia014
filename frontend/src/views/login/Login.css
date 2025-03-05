@@ -1,0 +1,19 @@
+body {
+    background-color: rgb(221, 221, 221);
+}
+
+#foto-usac {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    border-radius: 1%;
+}
+
+#logo-dtt {
+    width: 80%;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    border-radius: 1%;
+    margin-top: 20px;
+}
