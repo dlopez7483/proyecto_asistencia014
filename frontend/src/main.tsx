@@ -6,20 +6,13 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Login from './views/login/Login';
+import { RouterProvider } from 'react-router-dom'
+import { router } from './router';
+import { StrictMode } from 'react';
 
-
-const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: <Login />,
-      errorElement: <div>404</div>
-    }
-  ]
-)
 
 createRoot(document.getElementById('root')!).render(
-  <RouterProvider router={router} />
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>
 )
