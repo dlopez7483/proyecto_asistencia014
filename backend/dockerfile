@@ -1,0 +1,25 @@
+FROM node:21-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+RUN npm install -g nodemon 
+
+RUN npm audit fix --force
+
+COPY . .
+
+COPY .env .env
+
+ARG DB_HOST 
+ARG DB_USER
+ARG DB_PASSWORD
+ARG SERVER_PORT
+ARG DB_NAME
+
+EXPOSE 5000
+
+CMD ["nodemon", "src/index.js"]
