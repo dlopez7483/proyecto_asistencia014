@@ -1,17 +1,21 @@
 const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
 const app = express();
-
-app.set('port', process.env.SERVER_PORT || 5000);
-
-
+const cors = require('cors');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const { verifyToken } = require('./middlewares/authMiddleware');
 app.use(express.json());
 app.use(cors());
 
+app.use('/auth', authRoutes); //cualquier usuario puede usar el login
 
-app.use(require('./routes/rutas'));
+// Rutas protegidas (requieren JWT)
+app.use('/user', verifyToken, userRoutes);
 
+// Manejo de errores
+app.use((req, res, next) => {
+    res.status(404).json({ mensaje: 'Ruta no encontrada' });
+});
 
 
 module.exports = app;
