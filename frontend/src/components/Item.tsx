@@ -6,7 +6,7 @@ const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: 'center',
-  height: `calc(100% - ${theme.spacing(1)}*2)`,
+  height: '100%',
   color: theme.palette.text.secondary,
   ...theme.applyStyles('dark', {
     backgroundColor: '#1A2027',
