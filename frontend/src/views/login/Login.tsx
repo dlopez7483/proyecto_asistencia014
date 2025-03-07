@@ -15,7 +15,7 @@ function Login() {
                             <img id='logo-dtt' src="/src/assets/logo-ecys-fiusac-min.png" alt="Usac" />
                         </Container>
                         <Container sx={{ position: 'absolute', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                            <Box sx={{ typography: 'body1', marginBottom: '1rem' }}>INICIO DE SESIÓN</Box>
+                            <Box sx={{ typography: 'body1', marginBottom: '1rem', color:'text.primary' }}>INICIO DE SESIÓN</Box>
                             <TextField
                                 required
                                 id="usuario"
