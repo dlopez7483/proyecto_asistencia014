@@ -8,7 +8,10 @@ export const Theme = createTheme({
         light: {
             palette: {
                 primary: {
-                    main: "#FFAA00",
+                    main: "#000",
+                },
+                background: {
+                    paper: "#e5e5e5",     // Fondo de elementos tipo "paper"
                 },
             },
         },
