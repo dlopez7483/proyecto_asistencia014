@@ -46,3 +46,14 @@ exports.login = async (req, res) => {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
 };
+
+
+exports.logout = async (req, res) => {
+    try {
+        // frontend simplemente lo elimine del almacenamiento local (localStorage o sessionStorage)
+        res.status(200).json({ mensaje: 'Logout exitoso' });
+    } catch (error) {
+        console.error('Error en el logout:', error);
+        res.status(500).json({ mensaje: 'Error en el servidor' });
+    }
+};

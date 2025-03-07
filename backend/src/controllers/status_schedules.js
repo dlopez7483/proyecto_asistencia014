@@ -1,25 +1,33 @@
-const mysql = require('mysql2/promise'); // Cambiamos a mysql2/promise
+const mysql = require('mysql2/promise');
 const config = require('../config/config');
 
-exports.verificarEstadoPeriodoHorarios = async (req, res) => {
+// 🔹 Función de utilidad que obtiene el estado del período de horarios
+exports.verificarEstadoPeriodoHorarios = async () => {
     try {
-        // Conexión a la base de datos usando la versión de promesas
         const connection = await mysql.createConnection(config.db);
-        // Consulta para obtener el estado actual del período de horarios
         const query = `SELECT Periodo_horarios FROM Configuracion WHERE Id_configuracion = 1;`;
-        // Ejecutar la consulta
         const [rows] = await connection.execute(query);
-        // Cerrar la conexión
         await connection.end();
-        // Verificar si se obtuvo un resultado válido
-        if (rows.length > 0) {
-            const estado = rows[0].Periodo_horarios;
-            res.status(200).json({ estado: estado === 1 ? 'habilitado' : 'deshabilitado' });
-        } else {
-            res.status(404).json({ mensaje: 'No se encontró configuración' });
-        }
+
+        // Retornar el estado (1 o 0) si se encontró un resultado válido
+        return rows.length > 0 ? rows[0].Periodo_horarios : null;
     } catch (error) {
         console.error('Error al verificar el estado del periodo de horarios:', error);
+        throw error; // Lanzamos el error para manejarlo en otro lugar
+    }
+};
+
+// 🔹 Controlador que usa la función y responde a la API
+exports.obtenerEstadoPeriodoHorarios = async (req, res) => {
+    try {
+        const estado = await exports.verificarEstadoPeriodoHorarios();
+
+        if (estado === null) {
+            return res.status(404).json({ mensaje: 'No se encontró configuración' });
+        }
+
+        res.status(200).json({ estado: estado === 1 ? 'habilitado' : 'deshabilitado' });
+    } catch (error) {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
 };
