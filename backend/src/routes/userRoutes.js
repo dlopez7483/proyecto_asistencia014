@@ -5,7 +5,7 @@ const { adminRequired, auxiliarRequired } = require('../middlewares/authMiddlewa
 const { registerAuxiliar } = require('../controllers/admin/register');
 const  configuracionController  = require('../controllers/admin/config_schedules')
 const  {obtenerHorariosAuxiliar} = require('../controllers/admin/get_schedules')
-
+const { editarHorario } = require('../controllers/admin/edit_schedules');
 
 
 //rutas de los auxiliares
@@ -18,6 +18,7 @@ router.post('/admin/register', adminRequired, registerAuxiliar);//funciona
 router.post('/habilitar_periodo_horarios/admin',adminRequired, configuracionController.habilitarPeriodoHorarios);
 router.post('/deshabilitar_periodo_horarios/admin', adminRequired, configuracionController.deshabilitarPeriodoHorarios);
 router.get('/horarios_auxiliar/admin/:carne', adminRequired, obtenerHorariosAuxiliar);
+router.put('/editar_horario/admin/:carne/:id_horario', adminRequired, editarHorario);
 
 //router.get('/verificar_estado_periodo_horarios', configuracionController.verificarEstadoPeriodoHorarios);
 
