@@ -34,6 +34,7 @@ exports.editarHorario = async (req, res) => {
         const connection = await mysql.createConnection(config.db);
 
         // Obtener el id_auxiliar a partir del carne ya que no tenemos el carne en la tabla auxiliar_horario
+
         const queryGetIdAuxiliar = `
             SELECT Id_auxiliar FROM Auxiliar WHERE Carne = ?
         `;

@@ -6,6 +6,7 @@ const { registerAuxiliar } = require('../controllers/admin/register');
 const  configuracionController  = require('../controllers/admin/config_schedules')
 const  {obtenerHorariosAuxiliar} = require('../controllers/admin/get_schedules')
 const { editarHorario } = require('../controllers/admin/edit_schedules');
+const { reporteHorasFaltantes } = require('../controllers/admin/reports/missing_hours');
 
 
 //rutas de los auxiliares
@@ -13,12 +14,13 @@ const { agregarHorarioPracticante } = require('../controllers/auxiliar/auxiliar_
 const { obtenerHorariosAuxiliarPersonal } = require('../controllers/auxiliar/get_schedules_aux'); 
 //aca estaran todas las rutas de los auxiliares y administradores
 
-router.post('/admin/register', adminRequired, registerAuxiliar);//funciona
 
+router.post('/admin/register', adminRequired, registerAuxiliar);//funciona
 router.post('/habilitar_periodo_horarios/admin',adminRequired, configuracionController.habilitarPeriodoHorarios);
 router.post('/deshabilitar_periodo_horarios/admin', adminRequired, configuracionController.deshabilitarPeriodoHorarios);
 router.get('/horarios_auxiliar/admin/:carne', adminRequired, obtenerHorariosAuxiliar);
 router.put('/editar_horario/admin/:carne/:id_horario', adminRequired, editarHorario);
+router.get('/horas_faltantes/admin', adminRequired, reporteHorasFaltantes);
 
 //router.get('/verificar_estado_periodo_horarios', configuracionController.verificarEstadoPeriodoHorarios);
 
