@@ -11,7 +11,7 @@ export const Theme = createTheme({
                     main: "#000",
                 },
                 background: {
-                    paper: "#e5e5e5",     // Fondo de elementos tipo "paper"
+                    paper: "#e5e5e5",    
                 },
             },
         },
