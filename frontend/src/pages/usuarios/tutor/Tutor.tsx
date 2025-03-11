@@ -1,6 +1,5 @@
-import Dashboard from '../../components/Dashboard';
-import Navigation from './Navigation-Tutor';
-import { Theme } from '../../components/Theme';
+import Dashboard from '@common/components/Dashboard';
+import Navigation from './Navigation';
 
 
 const BRANDING = {
@@ -12,6 +11,6 @@ const BRANDING = {
 export default function Dashboard_Admin() {
 
   return (
-    <Dashboard branding={BRANDING} navigation={Navigation} theme={Theme} />
+    <Dashboard branding={BRANDING} navigation={Navigation} />
   );
 }
