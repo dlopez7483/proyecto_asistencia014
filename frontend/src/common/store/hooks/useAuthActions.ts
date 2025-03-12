@@ -1,6 +1,6 @@
-import { useAppDispatch } from "@common/store/hooks/storeHook";
+import { useAppDispatch } from "@common/store/hooks/useStoreHooks";
 import { deleteAuthReducer, setAuthReducer } from "@common/store/slices/authSlice";
-import { Auth } from "@pages/login/interfaces/Auth";
+import { Auth } from "@common/interfaces/Auth";
 
 export const useAuthActions = () => {
   const dispatch = useAppDispatch();

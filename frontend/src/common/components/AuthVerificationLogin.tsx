@@ -1,12 +1,13 @@
 import React from "react";
 import { Navigate } from "react-router";
+import { config } from "@config/config";
 
 interface Props {
   children?: React.ReactNode;
 }
 
 export default function AuthVerification(props: Props) {
-  const authSession = sessionStorage.getItem("_lab014_user");
+  const authSession = sessionStorage.getItem(config.SESSION_AUTH);
 
   function verifyAuth() {
     if (!authSession) {
@@ -18,7 +19,7 @@ export default function AuthVerification(props: Props) {
       } else if (auth.rol === 2) {
         return <Navigate to="/dashboard-tutor" />;
       } else {
-        sessionStorage.removeItem("_lab014_user");
+        sessionStorage.removeItem(config.SESSION_AUTH);
         return props.children;
       }
     }

@@ -5,7 +5,7 @@ import {
   Grid2,
 } from "@mui/material";
 import Item from "@common/components/Item";
-import { OutherTheme } from "@common/components/OutherTheme";
+import { OutherTheme } from "@common/styles/OutherTheme";
 import { AppProvider } from "@toolpad/core";
 
 
