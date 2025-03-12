@@ -5,11 +5,11 @@ import type { Branding } from "@toolpad/core";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import { Outlet } from "react-router-dom";
-import { OutherTheme } from "./OutherTheme";
+import { OutherTheme } from "../styles/OutherTheme";
 import { ThemeProvider } from "@mui/material";
-import { InnerTheme } from "./InnerTheme";
+import { InnerTheme } from "../styles/InnerTheme";
 import React from "react";
-import { useAppSelector } from "@common/store/hooks/storeHook";
+import { useAppSelector } from "@common/store/hooks/useStoreHooks";
 import { useAuthActions } from "@common/store/hooks/useAuthActions";
 import CustomAccount from "./CustomAccount";
 import logoutFunction from "@common/services/logoutFunction";
@@ -31,7 +31,6 @@ export default function Dashboard(props: Props) {
           .then((res) => {
             console.log(res);
             deleteAuthAction();
-            window.location.href = "/";
           })
           .catch((error) => {
             console.log(error);

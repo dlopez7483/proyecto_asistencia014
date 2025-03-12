@@ -1,74 +1,73 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import {
-  Grid2,
-  TextField,
-} from "@mui/material";
+import { Button, TextField } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  maxWidth: "80vw",
-  maxHeight: "80vh",
-  overflow: "auto",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+import { ModalStyle } from "@common/styles/ModalStyle";
+import { useModal } from "@common/hooks/useModal";
+import { useField } from "@common/hooks/useField";
 
-interface Props {
-  state: boolean;
-  setStateModal: (state: boolean) => void;
-}
-
-export default React.memo(function ModalRegistrarForm(props: Props) {
-  const handleClose = () => props.setStateModal(false);
+export default function ModalRegistrarForm() {
+  const modal = useModal(false);
+  const carnet = useField("text", "Carnet", "");
+  const nombre = useField("text", "Nombre", "");
+  const apellido = useField("text", "Apellido", "");
+  const password = useField("password", "Password", "");
+  const rfid = useField("password", "RFID", "");
 
   return (
-    <Modal
-      open={props.state}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Registrar Usuario
-        </Typography>
-        <Box component="form" sx={{ mt: 1 }}>
-          <Grid2 container spacing={2} sx={{ p: 1 }}>
-            <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
-              <TextField required id="carne" label="Carne" />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
-              <TextField required id="nombre" label="Nombre" />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
-              <TextField required id="apellido" label="Apellido" />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
-              <TextField required id="telefono" label="Telefono" />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
-              {" "}
-              <TextField
-                required
-                id="password"
-                label="Password"
-                type="password"
-                autoComplete="current-password"
-              />
-            </Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}></Grid2>
-            <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6 }}></Grid2>
-          </Grid2>
+    <>
+      <Button
+        variant="contained"
+        color="success"
+        startIcon={<AddIcon />}
+        onClick={modal.handleOpen}
+      >
+        Registrar
+      </Button>
+      <Modal
+        open={modal.open}
+        onClose={modal.handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ mb: 2 }}
+          >
+            Registrar Usuario
+          </Typography>
+          <Box component="form" sx={{ "& .MuiTextField-root": { m: 1 } }}>
+            <div style={{ textAlign: "center" }}>
+              <TextField required {...carnet} />
+              <TextField required {...nombre} />
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <TextField required {...apellido} />
+              <TextField required {...password} />
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <TextField required type="number" placeholder="Telefono" />
+              <TextField required {...rfid} autoComplete="current-password" />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                margin: "1rem",
+              }}
+            >
+              <Button variant="outlined" color="success" sx={{ maxWidth: "100%" }}>
+                Registrar
+              </Button>
+            </div>
+          </Box>
         </Box>
-      </Box>
-    </Modal>
+      </Modal>
+    </>
   );
-});
+}
