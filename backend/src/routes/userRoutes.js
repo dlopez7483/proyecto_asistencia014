@@ -28,8 +28,7 @@ router.get('resetear_horarios/admin', adminRequired, configuracionController.res
 router.put('/Editar_practicante/:carne',adminRequired, edit_aux);
 =======
 router.get('resetear_horarios/admin', adminRequired, resetearHorarios);
-router.put('/Editar_practicante/:carne',adminRequired, edit_aux);
->>>>>>> feature/backend_roberto
+
 //router.get('/verificar_estado_periodo_horarios', configuracionController.verificarEstadoPeriodoHorarios);
 
 // router.get('/auxiliar', auxiliarRequired, (req, res) => {
