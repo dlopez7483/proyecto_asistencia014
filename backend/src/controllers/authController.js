@@ -5,7 +5,7 @@ const { generateToken } = require('../utils/jwtUtils');
 
 exports.login = async (req, res) => {
     const { carne, contrasena } = req.body;
-
+    console.log(req.body);
     if (!carne || !contrasena) {
         return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
     }

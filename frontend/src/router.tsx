@@ -1,38 +1,65 @@
 import { createBrowserRouter } from "react-router-dom";
-import Dashboard_Admin from "./views/dashboard-admin/Dashboard_Admin";
-import Login from "./views/login/Login";
 
-const router = createBrowserRouter(
-    [
-        {
-            path: "/",
-            element: <Login />,
-            errorElement: <div>404</div>
-        },
-        {
-            path: "dashboard-admin",
-            element: <Dashboard_Admin />,
-            children:
-                [
-                    {
-                        path: "",
-                        element: <div>Dashboard</div>,
-                    },
-                    {
-                        path: "tutores",
-                        element: <div>Usuarios</div>,
-                    },
-                    {
-                        path: "horarios",
-                        element: <div>Horarios</div>,
-                    },
-                    {
-                        path: "reportes",
-                        element: <div>Reportes</div>,
-                    }
-                ]
-        }
-    ]
-)
+import Login from "@pages/login";
+import Administrador from "@pages/usuarios/administrador";
+import Tutor from "@pages/usuarios/tutor";
+import AdminTutores from "@pages/usuarios/administrador/tutores";
+//import AuthVerification from "@common/components/AuthVerification";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      //<AuthVerification>
+      <Login />
+      //</AuthVerification>
+    ),
+    errorElement: <div>404</div>,
+  },
+  {
+    path: "dashboard-admin",
+    element: <Administrador />,
+    children: [
+      {
+        path: "",
+        element: <div>Dashboard</div>,
+      },
+      {
+        path: "tutores",
+        element: <AdminTutores />,
+      },
+      {
+        path: "horarios",
+        element: <div>Horarios</div>,
+      },
+      {
+        path: "reportes",
+        element: <div>Reportes</div>,
+      },
+    ],
+  },
+  {
+    path: "dashboard-tutor",
+    element: <Tutor />,
+    children: [
+      {
+        path: "",
+        element: <div>Dashboard</div>,
+      },
+      {
+        path: "tutores",
+        element: <div>Tutor</div>,
+      },
+      {
+        path: "horarios",
+        element: <div>Horarios</div>,
+      },
+      {
+        path: "reportes",
+        element: <div>Reportes</div>,
+      },
+    ],
+  },
+]);
 
 export { router };
