@@ -1,3 +1,5 @@
+import { useField } from "@common/hooks/useField";
+import { useSelect } from "@common/hooks/useSelect";
 import {
   Box,
   Button,
@@ -6,41 +8,16 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextField,
 } from "@mui/material";
+import { useAuth } from "../hooks/useAuth";
 
-import React from "react";
-import loginFunction from "../services/loginFunction";
-import { useAuthActions } from "../../../common/store/hooks/useAuthActions";
-import Swal from "sweetalert2";
 
 export default function FormLogin() {
-  const { setAuthAction } = useAuthActions();
-  const [auth, setAuth] = React.useState({
-    carne: "",
-    contrasenia: "",
-    rol: 1,
-  });
-
-  const login = async () => {
-    const response = await loginFunction(
-      auth.carne,
-      auth.contrasenia,
-      auth.rol
-    );
-
-    if (response.status === 200) {
-      setAuthAction({
-        carne: auth.carne,
-        rol: auth.rol,
-        token: response.token,
-      });
-
-      if (auth.rol === 1) window.location.href = "/dashboard-admin";
-      else if (auth.rol === 2) window.location.href = "/dashboard-tutor";
-    } else Swal.fire({ icon: "error", title: "Error al Inicio de Sesión", text: response.mensaje });
-  };
+  const usuario = useField("text", "usuario","" );
+  const password = useField("password", "password","" );
+  const selectRol = useSelect("rol","1" );
+  const { login } = useAuth(usuario.value, password.value, parseInt(selectRol.value));
 
   return (
     <Container
@@ -63,36 +40,20 @@ export default function FormLogin() {
       </Box>
       <TextField
         required
-        id="usuario"
-        label="Usuario"
-        value={auth.carne}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setAuth({ ...auth, carne: e.target.value })
-        }
+        {...usuario}
       />
       <TextField
         required
-        id="password"
-        label="Password"
-        type="password"
         placeholder="Contraseña"
         autoComplete="current-password"
         sx={{ marginTop: 2 }}
-        value={auth.contrasenia}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setAuth({ ...auth, contrasenia: e.target.value })
-        }
+        {...password}
       />
       <FormControl sx={{ marginTop: 2 }}>
         <InputLabel id="selectRol">Rol</InputLabel>
         <Select
           labelId="demo-simple-select-label"
-          id="select"
-          label="Rol"
-          value={String(auth.rol)}
-          onChange={(e: SelectChangeEvent) =>
-            setAuth({ ...auth, rol: Number(e.target.value) })
-          }
+          {...selectRol}
         >
           <MenuItem value={1}>Administrador</MenuItem>
           <MenuItem value={2}>Tutor</MenuItem>

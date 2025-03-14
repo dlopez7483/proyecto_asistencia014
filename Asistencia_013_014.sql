@@ -1,4 +1,5 @@
-CREATE DATABASE Asistencia_013_014;
+DROP DATABASE IF EXISTS Asistencia_013_014;
+CREATE DATABASE IF NOT EXISTS Asistencia_013_014;
 USE Asistencia_013_014;
 CREATE TABLE Rol(
     Id_rol INT AUTO_INCREMENT PRIMARY KEY,
@@ -28,7 +29,7 @@ CREATE TABLE Auxiliar_Horario(
     Id_auxiliar INT NOT NULL,
     Id_horario INT NOT NULL,
     PRIMARY KEY (Id_auxiliar, Id_horario),
-    FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar),
+    FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (Id_horario) REFERENCES Horario(Id_horario)
 );
 
@@ -38,7 +39,7 @@ CREATE TABLE Asistencia_Entrada(
     Id_horario INT NOT NULL,
     Fecha DATE NOT NULL,
     Hora_marcacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar),
+    FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (Id_horario) REFERENCES Horario(Id_horario)
 );
 
@@ -48,7 +49,7 @@ CREATE TABLE Asistencia_Salida(
     Id_horario INT NOT NULL,
     Fecha DATE NOT NULL,
     Hora_marcacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar),
+    FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (Id_horario) REFERENCES Horario(Id_horario)
 );
 
@@ -60,3 +61,6 @@ CREATE TABLE Configuracion (
 INSERT INTO Rol(Rol) VALUES('Admin');
 INSERT INTO Rol(Rol) VALUES('Auxiliar');
 INSERT INTO Configuracion(Periodo_horarios) VALUES('1');
+
+INSERT INTO Auxiliar (Nombre, Apellido, Carne, Telefono, Contrasenia, Id_rol) 
+VALUES ("Bryan", "Vasquez", "201907483", "59453475", "$2a$12$NkhTkuAsmBzlXPME/oRJA.a9insU72zSX.0Kscj/YBmpBT2qZQ59S", 1);
