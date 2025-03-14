@@ -23,7 +23,7 @@ router.get('/horarios_auxiliar/admin/:carne', adminRequired, obtenerHorariosAuxi
 router.put('/editar_horario/admin/:carne/:id_horario', adminRequired, editarHorario);
 router.get('/horas_faltantes/admin', adminRequired, reporteHorasFaltantes);
 router.delete('/eliminar_practicante/admin/:carne', adminRequired, deleteAuxiliar);
-router.get('resetear_horarios/admin', adminRequired, configuracionController.resetearHorarios);
+router.get('resetear_horarios/admin', adminRequired, resetearHorarios);
 
 //router.get('/verificar_estado_periodo_horarios', configuracionController.verificarEstadoPeriodoHorarios);
 
