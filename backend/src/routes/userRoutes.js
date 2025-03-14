@@ -10,10 +10,11 @@ const { reporteHorasFaltantes } = require('../controllers/admin/reports/missing_
 const { edit_aux } = require('../controllers/auxiliar/edit_aux');
 const { deleteAuxiliar } = require('../controllers/admin/delete');
 const { resetSchedules } = require('../controllers/admin/reset_schedules');
-
+const { obtenerTodosLosAuxiliares } = require('../controllers/admin/getInfoAuxiliares');//para obtener todos los auxiliares
+const { searchAuxiliar } = require('../controllers/admin/getInfoAuxiliares');//para obtener un solo auxiliar
 //rutas de los auxiliares
 const { agregarHorarioPracticante } = require('../controllers/auxiliar/auxiliar_schedules')
-const { obtenerHorariosAuxiliarPersonal } = require('../controllers/auxiliar/get_schedules_aux'); 
+const { obtenerHorariosAuxiliarPersonal } = require('../controllers/auxiliar/get_schedules_aux');
 //aca estaran todas las rutas de los auxiliares y administradores
 
 
@@ -26,6 +27,8 @@ router.get('/horas_faltantes/admin', adminRequired, reporteHorasFaltantes);
 router.delete('/eliminar_practicante/admin/:carne', adminRequired, deleteAuxiliar);
 router.put('/Editar_practicante/:carne',adminRequired, edit_aux);
 router.get('resetear_horarios/admin', adminRequired, resetSchedules);
+router.get('/getAllAuxiliares/admin', adminRequired, obtenerTodosLosAuxiliares);
+router.get('/getInfoAux/admin/:carne', adminRequired, searchAuxiliar);
 
 //router.get('/verificar_estado_periodo_horarios', configuracionController.verificarEstadoPeriodoHorarios);
 
