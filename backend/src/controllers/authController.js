@@ -14,8 +14,9 @@ exports.login = async (req, res) => {
         // Conectar a la base de datos
         const connection = await mysql.createConnection(config.db);
         
-        // Buscar usuario por carné sin necesidad de que el frontend envíe el rol
-        const query = 'SELECT * FROM Auxiliar WHERE Carne = ?';
+        // Buscar usuario por carné y obtener el rol
+        const query = 'SELECT Carne, Contrasenia, Id_rol FROM Auxiliar WHERE Carne = ?';
+        //console.log(query);
         const [results] = await connection.execute(query, [carne]);
         await connection.end();
 
@@ -24,9 +25,11 @@ exports.login = async (req, res) => {
             const isPasswordValid = await bcrypt.compare(contrasena, auxiliar.Contrasenia);
 
             if (isPasswordValid) {
-                // Generar token con el rol obtenido de la BD
-                const token = generateToken(auxiliar);
-                res.status(200).json({ mensaje: 'Bienvenido', token });
+                // Generar token con el rol incluido
+                const token = generateToken({ carne: auxiliar.Carne, rol: auxiliar.Rol });
+
+                // Responder con el mensaje, el token y el rol
+                res.status(200).json({ mensaje: 'Bienvenido', token, rol: auxiliar.Rol });
             } else {
                 res.status(401).json({ mensaje: 'Contraseña incorrecta' });
             }
@@ -38,6 +41,7 @@ exports.login = async (req, res) => {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
 };
+
 
 exports.logout = async (req, res) => {
     try {
