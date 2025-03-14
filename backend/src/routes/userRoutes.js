@@ -24,6 +24,10 @@ router.get('/horarios_auxiliar/admin/:carne', adminRequired, obtenerHorariosAuxi
 router.put('/editar_horario/admin/:carne/:id_horario', adminRequired, editarHorario);
 router.get('/horas_faltantes/admin', adminRequired, reporteHorasFaltantes);
 router.delete('/eliminar_practicante/admin/:carne', adminRequired, deleteAuxiliar);
+<<<<<<< HEAD
+=======
+//router.get('resetear_horarios/admin', adminRequired, configuracionController.resetearHorarios);
+>>>>>>> feature/back_end_david
 router.put('/Editar_practicante/:carne',adminRequired, edit_aux);
 router.get('resetear_horarios/admin', adminRequired, resetSchedules);
 
