@@ -14,24 +14,10 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "@common/components/StyledTable";
+import { useAppSelector } from "@common/store/hooks/useStoreHooks";
 
 export default function TablaTutores() {
-  const rows = [
-    {
-      id: 1,
-      nombre: "Prueba1",
-      apellido: "lab013",
-      carnet: 24523452,
-      telefono: 12345678,
-    },
-    {
-      id: 2,
-      nombre: "Prueba1",
-      apellido: "lab013",
-      carnet: 24523452,
-      telefono: 12345678,
-    },
-  ];
+  const tutores  = useAppSelector((state) => state.users.tutores);
 
   return (
     <TableContainer component={Paper} sx={{mt:2}}>
@@ -46,16 +32,16 @@ export default function TablaTutores() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {tutores.map((row) => (
             <StyledTableRow
-              key={row.id}
+              key={row.id_usuario}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <StyledTableCell component="th" scope="row">
                 {row.nombre}
               </StyledTableCell>
               <StyledTableCell align="right">{row.apellido}</StyledTableCell>
-              <StyledTableCell align="right">{row.carnet}</StyledTableCell>
+              <StyledTableCell align="right">{row.carne}</StyledTableCell>
               <StyledTableCell align="right">{row.telefono}</StyledTableCell>
               <StyledTableCell align="center">
                 <Button variant="contained">

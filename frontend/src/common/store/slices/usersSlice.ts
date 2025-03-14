@@ -20,30 +20,37 @@ const initialState: TutorState = {
 };
 
 const userSlice = createSlice({
-  name: "tutores",
+  name: "tutor",
   initialState,
   reducers: {
-    setTutores(state, action: PayloadAction<User[]>) {
+    setTutoresReducer(state, action: PayloadAction<User[]>) {
       state.tutores = action.payload;
     },
-    setNewTutor(state, action: PayloadAction<User>) {
+    setNewTutorReducer(state, action: PayloadAction<User>) {
       state.tutores.push(action.payload);
     },
-    updateTutor(state, action: PayloadAction<User>) {
+    updateTutorReducer(state, action: PayloadAction<User>) {
       const index = state.tutores.findIndex(
         (tutor) => tutor.id_usuario === action.payload.id_usuario
       );
       state.tutores[index] = action.payload;
     },
-    deleteTutor(state, action: PayloadAction<number>) {
+    deleteTutorReducer(state, action: PayloadAction<number>) {
       state.tutores = state.tutores.filter(
         (tutor) => tutor.id_usuario !== action.payload
       );
     },
-    restTutores(state) {
+    restTutoresReducer(state) {
       state.tutores = [];
     },
   },
 });
 
 export default userSlice.reducer;
+export const {
+  setTutoresReducer,
+  setNewTutorReducer,
+  updateTutorReducer,
+  deleteTutorReducer,
+  restTutoresReducer,
+} = userSlice.actions;
