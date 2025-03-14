@@ -14,7 +14,6 @@ exports.resetSchedules = async (req, res) => {
         res.status(200).json({ mensaje: 'Auxiliar eliminado exitosamente' });
 
     } catch (error) {
-        if (connection) await connection.rollback(); // Revertir cambios en caso de error
         console.error('Error en la eliminación:', error);
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
