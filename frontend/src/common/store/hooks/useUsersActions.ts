@@ -8,7 +8,7 @@ import {
 } from "../slices/usersSlice";
 import { User } from "@common/interfaces/User";
 
-export const useTutores = () => {
+export const useUsersActions = () => {
   const dispatch = useAppDispatch();
 
   const setTutores = (tutores:User[]) => {

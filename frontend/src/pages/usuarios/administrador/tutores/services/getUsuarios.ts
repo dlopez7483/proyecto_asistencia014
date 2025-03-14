@@ -1,6 +1,17 @@
-//import Service from "src/core/Service";
+import service from "@common/services/Service";
+import { AxiosError } from "axios";
 
-//const getUsuarios = async () => {
-//  const response = await Service.get("usuarios");
-//  return response.data;
-//};
+export const getUsuarios = async () => {
+  try {
+    const res = await service.get("/user/getAllAuxiliares/admin", {
+      headers: {
+        Authorization: "Bearer "+JSON.parse(sessionStorage.getItem("_lab014_token") || '{}').token,
+      },
+    });
+    return { ...res.data, status: res.status };
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    const response = axiosError.response?.data as Record<string, string>;
+    return { ...response, status: axiosError.response?.status };
+  }
+};

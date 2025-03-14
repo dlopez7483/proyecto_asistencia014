@@ -9,13 +9,13 @@ interface TutorState {
 const initialState: TutorState = {
   tutores: [],
   currentTutor: {
-    id_usuario: 0,
-    nombre: "",
-    apellido: "",
-    carne: "",
-    telefono: "",
-    contrasenia: "",
-    rol: 0,
+    Id_auxiliar: 0,
+    Nombre: "",
+    Apellido: "",
+    Carne: "",
+    Telefono: "",
+    Contrasenia: "",
+    Id_rol: 0,
   },
 };
 
@@ -31,13 +31,13 @@ const userSlice = createSlice({
     },
     updateTutorReducer(state, action: PayloadAction<User>) {
       const index = state.tutores.findIndex(
-        (tutor) => tutor.id_usuario === action.payload.id_usuario
+        (tutor) => tutor.Id_auxiliar === action.payload.Id_auxiliar
       );
       state.tutores[index] = action.payload;
     },
     deleteTutorReducer(state, action: PayloadAction<number>) {
       state.tutores = state.tutores.filter(
-        (tutor) => tutor.id_usuario !== action.payload
+        (tutor) => tutor.Id_auxiliar !== action.payload
       );
     },
     restTutoresReducer(state) {
