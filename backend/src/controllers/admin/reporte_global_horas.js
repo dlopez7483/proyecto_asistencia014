@@ -7,19 +7,20 @@ exports.reporte_global_horas = async (req, res) => {
         const connection = await mysql.createConnection(config.db);
         const query_marcaciones = `
 SELECT
+  a.Id_auxiliar,
   a.Nombre,
   a.Apellido,
-  a.carne,
-  DATE_FORMAT(e.Fecha, '%Y-%m-%d') AS Fecha,
-  DATE_FORMAT(e.Hora_marcacion, '%H:%i:%s') AS Hora_entrada,
-  DATE_FORMAT(s.Hora_marcacion, '%H:%i:%s') AS Hora_salida
+  e.Fecha,
+  e.Hora_marcacion AS Hora_entrada,
+  s.Hora_marcacion AS Hora_salida,
+  e.Id_horario,
+  s.Id_horario
 FROM Auxiliar a
 INNER JOIN Asistencia_Entrada e
   ON a.Id_auxiliar = e.Id_auxiliar
 INNER JOIN Asistencia_Salida s
   ON a.Id_auxiliar = s.Id_auxiliar
-  AND e.Fecha = s.Fecha 
-  AND e.Id_horario = s.Id_horario
+  AND e.Fecha = s.Fecha AND e.Id_horario = s.Id_horario
 ORDER BY e.Fecha, a.Nombre, a.Apellido;
 
         `;
