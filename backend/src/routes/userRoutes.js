@@ -15,9 +15,10 @@ const { searchAuxiliar } = require('../controllers/admin/getInfoAuxiliares');//p
 //rutas de los auxiliares
 const { agregarHorarioPracticante } = require('../controllers/auxiliar/auxiliar_schedules')
 const { obtenerHorariosAuxiliarPersonal } = require('../controllers/auxiliar/get_schedules_aux');
+const { reporte_global_horas} = require('../controllers/admin/reporte_global_horas');
 //aca estaran todas las rutas de los auxiliares y administradores
 
-
+router.get('/admin/reporte_global_horas',adminRequired,reporte_global_horas);
 router.post('/admin/register', adminRequired, registerAuxiliar);//funciona
 router.post('/habilitar_periodo_horarios/admin',adminRequired, configuracionController.habilitarPeriodoHorarios);
 router.post('/deshabilitar_periodo_horarios/admin', adminRequired, configuracionController.deshabilitarPeriodoHorarios);

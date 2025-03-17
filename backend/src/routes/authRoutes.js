@@ -5,6 +5,7 @@ const { marcar_entrada } = require('../controllers/auxiliar/marcar_entrada');
 const { marcar_salida } = require('../controllers/auxiliar/marcar_salida');
 const  configuracionController  = require('../controllers/status_schedules');
 
+
 // Ruta para login
 router.post('/login', login);
 router.post('/logout', logout);
