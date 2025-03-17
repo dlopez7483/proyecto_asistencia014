@@ -4,15 +4,21 @@ const config = require('../../config/config');
 exports.resetSchedules = async (req, res) => {
     let connection;
     try {
-        // Crear conexión a la base de datos
         connection = await mysql.createConnection(config.db);
 
-        // Ejecutar la consulta para truncar la tabla
+        // Eliminar registros en orden correcto
+        await connection.execute(`SET FOREIGN_KEY_CHECKS = 0;`);
+        await connection.execute(`TRUNCATE TABLE Asistencia_Entrada;`);
+        await connection.execute(`TRUNCATE TABLE Asistencia_Salida;`);
+        await connection.execute(`TRUNCATE TABLE Auxiliar_Horario;`);
         await connection.execute(`TRUNCATE TABLE Horario;`);
+        await connection.execute(`SET FOREIGN_KEY_CHECKS = 1;`);
+
+        // Reiniciar el auto_increment de la tabla Horario
+        await connection.execute(`ALTER TABLE Horario AUTO_INCREMENT = 1;`);
 
         console.log('Tabla Horario reseteada exitosamente');
-        //await connection.commit(); // Confirmar transacción
-        await connection.end(); // Cerrar conexión
+        await connection.end();
         res.status(200).json({ mensaje: 'Tabla Horario reseteada exitosamente' });
 
     } catch (error) {

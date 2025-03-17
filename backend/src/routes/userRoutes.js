@@ -15,9 +15,11 @@ const { searchAuxiliar } = require('../controllers/admin/getInfoAuxiliares');//p
 //rutas de los auxiliares
 const { agregarHorarioPracticante } = require('../controllers/auxiliar/auxiliar_schedules')
 const { obtenerHorariosAuxiliarPersonal } = require('../controllers/auxiliar/get_schedules_aux');
+const { reporte_global_horas} = require('../controllers/admin/reporte_global_horas');
+const { reporte_horas_individual } = require('../controllers/auxiliar/reporte_horas_individual');
 //aca estaran todas las rutas de los auxiliares y administradores
 
-
+router.get('/admin/reporte_global_horas',adminRequired,reporte_global_horas);
 router.post('/admin/register', adminRequired, registerAuxiliar);//funciona
 router.post('/habilitar_periodo_horarios/admin',adminRequired, configuracionController.habilitarPeriodoHorarios);
 router.post('/deshabilitar_periodo_horarios/admin', adminRequired, configuracionController.deshabilitarPeriodoHorarios);
@@ -38,5 +40,7 @@ router.get('/getInfoAux/admin/:carne', adminRequired, searchAuxiliar);
 
 router.post('/aux/agregarHorario', auxiliarRequired, agregarHorarioPracticante);
 router.get('/aux/horarios_auxiliar',auxiliarRequired, obtenerHorariosAuxiliarPersonal);
+router.get('/aux/reporte_horas_individual',auxiliarRequired,reporte_horas_individual);
+
 
 module.exports = router;
