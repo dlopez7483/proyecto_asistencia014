@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 
 exports.edit_aux = async (req, res) => {
-    const carne = req.params.carne;
+    const carne = req.params.id;
     console.log(req.body)
     const { nombre, apellido, telefono, contrasenia, codigo_rfid, id_rol, carne_nuevo } = req.body;
     
