@@ -14,61 +14,85 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "@common/components/StyledTable";
+import { useAppSelector } from "@common/store/hooks/useStoreHooks";
+import { useEffect, useState } from "react";
+import { getUsuarios } from "../services/getUsuarios";
+import { useUsersActions } from "@common/store/hooks/useUsersActions";
+import ModalUpdateForm from "./ModalUpdateForm";
+import { useModal } from "@common/hooks/useModal";
 
 export default function TablaTutores() {
-  const rows = [
-    {
-      id: 1,
-      nombre: "Prueba1",
-      apellido: "lab013",
-      carnet: 24523452,
-      telefono: 12345678,
-    },
-    {
-      id: 2,
-      nombre: "Prueba1",
-      apellido: "lab013",
-      carnet: 24523452,
-      telefono: 12345678,
-    },
-  ];
+  const [tutor, setTutor] = useState({});
+  const modalUpdate = useModal(false);
+  const { tutores } = useAppSelector((state) => state.tutores);
+  const { setTutores } = useUsersActions();
+
+  useEffect(() => {
+    getUsuarios().then((res) => {
+      if (res.status === 200) {
+        setTutores(res.auxiliares);
+      } else {
+        setTutores([]);
+        console.log(res);
+      }
+    });
+  }, []);
 
   return (
-    <TableContainer component={Paper} sx={{mt:2}}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Nombre</TableCell>
-            <TableCell align="right">Apellido</TableCell>
-            <TableCell align="right">Carnet</TableCell>
-            <TableCell align="right">Telefono</TableCell>
-            <TableCell align="center">Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow
-              key={row.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <StyledTableCell component="th" scope="row">
-                {row.nombre}
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.apellido}</StyledTableCell>
-              <StyledTableCell align="right">{row.carnet}</StyledTableCell>
-              <StyledTableCell align="right">{row.telefono}</StyledTableCell>
-              <StyledTableCell align="center">
-                <Button variant="contained">
-                  <EditIcon />
-                </Button>
-                <Button variant="contained" color="error" sx={{ ml: 1 }}>
-                  <DeleteIcon />
-                </Button>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="left">Nombre</TableCell>
+              <TableCell align="right">Apellido</TableCell>
+              <TableCell align="right">Carnet</TableCell>
+              <TableCell align="right">Telefono</TableCell>
+              <TableCell align="right">RFID</TableCell>
+              <TableCell align="center">Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tutores.length > 0
+              ? tutores.map((row) => (
+                  <StyledTableRow
+                    key={row.Id_auxiliar}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <StyledTableCell component="th" scope="row">
+                      {row.Nombre}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.Apellido}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">{row.Carne}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.Telefono}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.Codigo_RFID}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Button
+                        variant="contained"
+                        onClick={() => {
+                          setTutor(row);
+                          modalUpdate.handleOpen();
+                        }}
+                      >
+                        <EditIcon />
+                      </Button>
+                      <Button variant="contained" color="error" sx={{ ml: 1 }}>
+                        <DeleteIcon />
+                      </Button>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))
+              : null}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <ModalUpdateForm tutor={tutor} modal={modalUpdate} />
+    </>
   );
 }

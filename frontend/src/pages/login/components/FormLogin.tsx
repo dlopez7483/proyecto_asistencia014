@@ -17,7 +17,7 @@ export default function FormLogin() {
   const usuario = useField("text", "usuario","" );
   const password = useField("password", "password","" );
   const selectRol = useSelect("rol","1" );
-  const { login } = useAuth(usuario.value, password.value, parseInt(selectRol.value));
+  const { login } = useAuth(usuario.props.value, password.props.value, parseInt(selectRol.value));
 
   return (
     <Container
@@ -40,14 +40,14 @@ export default function FormLogin() {
       </Box>
       <TextField
         required
-        {...usuario}
+        {...usuario.props}
       />
       <TextField
         required
         placeholder="Contraseña"
         autoComplete="current-password"
         sx={{ marginTop: 2 }}
-        {...password}
+        {...password.props}
       />
       <FormControl sx={{ marginTop: 2 }}>
         <InputLabel id="selectRol">Rol</InputLabel>
