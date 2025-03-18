@@ -1,13 +1,14 @@
-import authSlice from '@common/store/slices/authSlice';
-import usersSlice from '@common/store/slices/usersSlice';
-import { configureStore } from '@reduxjs/toolkit';
+import authSlice from "@common/store/slices/authSlice";
+import usersSlice from "@common/store/slices/usersSlice";
+import { configureStore } from "@reduxjs/toolkit";
+import { SyncDB } from "@common/store/middlewares/SyncDB";
 
 export const store = configureStore({
-    reducer: {
-        auth: authSlice,
-        users: usersSlice
-    },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware()   
+  reducer: {
+    auth: authSlice,
+    tutores: usersSlice,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(SyncDB),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

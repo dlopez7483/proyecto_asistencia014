@@ -1,6 +1,5 @@
 import { useAppDispatch } from "./useStoreHooks";
 import {
-  setNewTutorReducer,
   setTutoresReducer,
   updateTutorReducer,
   deleteTutorReducer,
@@ -13,10 +12,6 @@ export const useUsersActions = () => {
 
   const setTutores = (tutores:User[]) => {
     dispatch(setTutoresReducer(tutores));
-  };
-
-  const setNewTutor = (tutor:User) => {
-    dispatch(setNewTutorReducer(tutor));
   };
 
   const updateTutor = (tutor:User) => {
@@ -33,7 +28,6 @@ export const useUsersActions = () => {
 
   return {
     setTutores,
-    setNewTutor,
     updateTutor,
     deleteTutor,
     restTutores,

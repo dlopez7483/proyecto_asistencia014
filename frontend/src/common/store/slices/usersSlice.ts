@@ -26,9 +26,6 @@ const userSlice = createSlice({
     setTutoresReducer(state, action: PayloadAction<User[]>) {
       state.tutores = action.payload;
     },
-    setNewTutorReducer(state, action: PayloadAction<User>) {
-      state.tutores.push(action.payload);
-    },
     updateTutorReducer(state, action: PayloadAction<User>) {
       const index = state.tutores.findIndex(
         (tutor) => tutor.Id_auxiliar === action.payload.Id_auxiliar
@@ -43,14 +40,27 @@ const userSlice = createSlice({
     restTutoresReducer(state) {
       state.tutores = [];
     },
+    rollbackFromDeleteTutoresReducer(state, action: PayloadAction<User>) {
+      const isUserAlredyDefined = state.tutores.some(
+        (tutor) => tutor.Id_auxiliar === action.payload.Id_auxiliar
+      );
+      if (!isUserAlredyDefined) state.tutores.push(action.payload);
+    },
+    rollbackFromUpdateTutoresReducer(state, action: PayloadAction<User>) {
+      const index = state.tutores.findIndex(
+        (tutor) => tutor.Id_auxiliar === action.payload.Id_auxiliar
+      );
+      state.tutores[index] = action.payload;
+    }
   },
 });
 
 export default userSlice.reducer;
 export const {
   setTutoresReducer,
-  setNewTutorReducer,
   updateTutorReducer,
   deleteTutorReducer,
   restTutoresReducer,
+  rollbackFromDeleteTutoresReducer,
+  rollbackFromUpdateTutoresReducer
 } = userSlice.actions;

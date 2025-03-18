@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -8,15 +9,17 @@ import { useField } from "@common/hooks/useField";
 import { useUsersActions } from "@common/store/hooks/useUsersActions";
 import { User } from "@common/interfaces/User";
 import { useInputTelefono } from "../hooks/useInputTelefono";
-import { getUsuarios } from "../services/getUsuarios";
-import Swal from "sweetalert2";
-import { registrarTutor } from "../services/registrarTutor";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ModalRegistrarForm({modal}:{modal:any}) {
+export default function ModalUpdateForm({
+  modal,
+  tutor,
+}: {
+  modal: any;
+  tutor: User;
+}) {
   const { telefono, setTelefono, handleChangeTelefono } = useInputTelefono("");
-  const { setTutores } = useUsersActions();
-  
+  const { updateTutor } = useUsersActions();
+
   const carnet = useField("text", "Carnet", "");
   const nombre = useField("text", "Nombre", "");
   const apellido = useField("text", "Apellido", "");
@@ -35,41 +38,19 @@ export default function ModalRegistrarForm({modal}:{modal:any}) {
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const newTutor: User = {
+    const tutorInfo = {
+      Id_auxiliar: tutor.Id_auxiliar,
       Carne: carnet.props.value,
       Nombre: nombre.props.value,
-      Telefono: telefono.value,
       Apellido: apellido.props.value,
-      Contrasenia: password.props.value,
+      Password: password.props.value,
+      Telefono: telefono.value,
       Codigo_RFID: rfid.props.value,
     };
 
-    registrarTutor(newTutor).then((res) => {
-      if (res.status === 201) {
-        Swal.fire({
-          icon: "success",
-          title: "Registro exitoso",
-          text: "Se ha registrado el tutor exitosamente",
-        });
-        getUsuarios().then((res) => {
-          if (res.status === 200) {
-            setTutores(res.auxiliares);
-          } else {
-            setTutores([]);
-            console.log(res);
-          }
-        });
-        formReset();
-        modal.handleClose();
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al registrar",
-          text: res.mensaje,
-        });
-        modal.handleClose();
-      }
-    });
+    updateTutor(tutorInfo);
+    formReset();
+    modal.handleClose();
   }
 
   return (
@@ -87,7 +68,7 @@ export default function ModalRegistrarForm({modal}:{modal:any}) {
             component="h2"
             sx={{ mb: 2 }}
           >
-            Registrar Usuario
+            Actualizar Usuario
           </Typography>
           <Box
             component="form"
@@ -96,26 +77,22 @@ export default function ModalRegistrarForm({modal}:{modal:any}) {
             onSubmit={onSubmit}
           >
             <div style={{ textAlign: "center" }}>
-              <TextField required {...carnet.props} />
-              <TextField required {...nombre.props} />
+              <TextField {...carnet.props} placeholder={tutor.Carne} />
+              <TextField {...nombre.props} placeholder={tutor.Nombre} />
             </div>
             <div style={{ textAlign: "center" }}>
-              <TextField required {...apellido.props} />
-              <TextField required {...password.props} />
+              <TextField {...apellido.props} placeholder={tutor.Apellido}/>
+              <TextField {...password.props} />
             </div>
             <div style={{ textAlign: "center" }}>
               <TextField
-                required
                 type="number"
-                placeholder="Telefono"
+                placeholder={tutor.Telefono}
+                label="Telefono"
                 {...telefono}
                 onChange={handleChangeTelefono}
               />
-              <TextField
-                required
-                {...rfid.props}
-                autoComplete="current-password"
-              />
+              <TextField {...rfid.props} placeholder={tutor.Codigo_RFID} />
             </div>
             <div
               style={{
@@ -130,7 +107,7 @@ export default function ModalRegistrarForm({modal}:{modal:any}) {
                 type="submit"
                 sx={{ maxWidth: "100%" }}
               >
-                Registrar
+                Actualizar
               </Button>
             </div>
           </Box>
