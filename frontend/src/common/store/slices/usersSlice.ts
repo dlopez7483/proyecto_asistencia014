@@ -30,7 +30,7 @@ const userSlice = createSlice({
       const index = state.tutores.findIndex(
         (tutor) => tutor.Id_auxiliar === action.payload.Id_auxiliar
       );
-      state.tutores[index] = action.payload;
+      state.tutores[index] = {...state.tutores[index], ...action.payload};
     },
     deleteTutorReducer(state, action: PayloadAction<number>) {
       state.tutores = state.tutores.filter(

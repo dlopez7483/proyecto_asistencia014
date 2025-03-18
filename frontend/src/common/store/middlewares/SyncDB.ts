@@ -17,7 +17,7 @@ export const SyncDB: Middleware = (store) => (next) => (action) => {
     if (payload.Codigo_RFID) tutorToUpdate.set("codigo_rfid", payload.Codigo_RFID);
     if (payload.Password) tutorToUpdate.set("contrasenia", payload.Password);
 
-    updateTutor(tutorToUpdate,payload.id).then((response) => {
+    updateTutor(tutorToUpdate,payload.Id_auxiliar).then((response) => {
       console.log(previousState);
       if (response.status !== 200) {
         const prevTutor = previousState.tutores.tutores.find(

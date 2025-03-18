@@ -7,9 +7,9 @@ export const updateTutor = async (
 ) => {
   try {
     console.log(tutor);
-    const response = await service.put(
+    const res = await service.put(
       `/user/Editar_practicante/${id}`,
-      tutor,
+      Object.fromEntries(tutor),
       {
         headers: {
           Authorization:
@@ -18,7 +18,7 @@ export const updateTutor = async (
         },
       }
     );
-    return response.data;
+    return { ...res.data, status: res.status };
   } catch (error) {
     const axiosError = error as AxiosError;
     const response = axiosError.response?.data as Record<string, string>;

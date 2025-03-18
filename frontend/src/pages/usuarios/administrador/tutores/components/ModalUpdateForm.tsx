@@ -38,15 +38,13 @@ export default function ModalUpdateForm({
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const tutorInfo = {
-      Id_auxiliar: tutor.Id_auxiliar,
-      Carne: carnet.props.value,
-      Nombre: nombre.props.value,
-      Apellido: apellido.props.value,
-      Password: password.props.value,
-      Telefono: telefono.value,
-      Codigo_RFID: rfid.props.value,
-    };
+    const tutorInfo: User = {Id_auxiliar: tutor.Id_auxiliar};
+    if (carnet.props.value != "") tutorInfo.Carne = carnet.props.value;
+    if (nombre.props.value != "") tutorInfo.Nombre = nombre.props.value;
+    if (apellido.props.value != "") tutorInfo.Apellido = apellido.props.value;
+    if (password.props.value != "") tutorInfo.Contrasenia = password.props.value;
+    if (telefono.value != "") tutorInfo.Telefono = telefono.value;
+    if (rfid.props.value != "") tutorInfo.Codigo_RFID = rfid.props.value;
 
     updateTutor(tutorInfo);
     formReset();
