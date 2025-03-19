@@ -27,7 +27,7 @@ router.get('/horarios_auxiliar/admin/:carne', adminRequired, obtenerHorariosAuxi
 router.put('/editar_horario/admin/:carne/:id_horario', adminRequired, editarHorario);
 router.get('/horas_faltantes/admin', adminRequired, reporteHorasFaltantes);
 router.delete('/eliminar_practicante/admin/:carne', adminRequired, deleteAuxiliar);
-router.put('/Editar_practicante/:carne',adminRequired, edit_aux);
+router.put('/Editar_practicante/:id',adminRequired, edit_aux);
 router.get('resetear_horarios/admin', adminRequired, resetSchedules);
 router.get('/getAllAuxiliares/admin', adminRequired, obtenerTodosLosAuxiliares);
 router.get('/getInfoAux/admin/:carne', adminRequired, searchAuxiliar);
