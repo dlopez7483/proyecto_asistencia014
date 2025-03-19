@@ -3,9 +3,9 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Button, TextField } from "@mui/material";
 
-import { ModalStyle } from "@common/styles/ModalStyle";
-import { useField } from "@common/hooks/useField";
-import { useUsersActions } from "@common/store/hooks/useUsersActions";
+import { ModalStyle } from "@common/styles";
+import { useField } from "@common/hooks";
+import { useUsersActions } from "@common/store/hooks";
 import { User } from "@common/interfaces/User";
 import { useInputTelefono } from "../hooks/useInputTelefono";
 import { getUsuarios } from "../services/getUsuarios";
@@ -13,10 +13,10 @@ import Swal from "sweetalert2";
 import { registrarTutor } from "../services/registrarTutor";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ModalRegistrarForm({modal}:{modal:any}) {
+export default function ModalRegistrarForm({ modal }: { modal: any }) {
   const { telefono, setTelefono, handleChangeTelefono } = useInputTelefono("");
   const { setTutores } = useUsersActions();
-  
+
   const carnet = useField("text", "Carnet", "");
   const nombre = useField("text", "Nombre", "");
   const apellido = useField("text", "Apellido", "");

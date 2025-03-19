@@ -1,5 +1,8 @@
-import { useAppDispatch } from "@common/store/hooks/useStoreHooks";
-import { deleteAuthReducer, setAuthReducer } from "@common/store/slices/authSlice";
+import { useAppDispatch } from "@common/store/hooks";
+import {
+  deleteAuthReducer,
+  setAuthReducer,
+} from "@common/store/slices/authSlice";
 import { Auth } from "@common/interfaces/Auth";
 
 export const useAuthActions = () => {

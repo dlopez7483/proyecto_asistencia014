@@ -4,9 +4,9 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Button, TextField } from "@mui/material";
 
-import { ModalStyle } from "@common/styles/ModalStyle";
-import { useField } from "@common/hooks/useField";
-import { useUsersActions } from "@common/store/hooks/useUsersActions";
+import { ModalStyle } from "@common/styles";
+import { useField } from "@common/hooks";
+import { useUsersActions } from "@common/store/hooks";
 import { User } from "@common/interfaces/User";
 import { useInputTelefono } from "../hooks/useInputTelefono";
 
@@ -38,11 +38,12 @@ export default function ModalUpdateForm({
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const tutorInfo: User = {Id_auxiliar: tutor.Id_auxiliar};
+    const tutorInfo: User = { Id_auxiliar: tutor.Id_auxiliar };
     if (carnet.props.value != "") tutorInfo.Carne = carnet.props.value;
     if (nombre.props.value != "") tutorInfo.Nombre = nombre.props.value;
     if (apellido.props.value != "") tutorInfo.Apellido = apellido.props.value;
-    if (password.props.value != "") tutorInfo.Contrasenia = password.props.value;
+    if (password.props.value != "")
+      tutorInfo.Contrasenia = password.props.value;
     if (telefono.value != "") tutorInfo.Telefono = telefono.value;
     if (rfid.props.value != "") tutorInfo.Codigo_RFID = rfid.props.value;
 
@@ -79,7 +80,7 @@ export default function ModalUpdateForm({
               <TextField {...nombre.props} placeholder={tutor.Nombre} />
             </div>
             <div style={{ textAlign: "center" }}>
-              <TextField {...apellido.props} placeholder={tutor.Apellido}/>
+              <TextField {...apellido.props} placeholder={tutor.Apellido} />
               <TextField {...password.props} />
             </div>
             <div style={{ textAlign: "center" }}>

@@ -1,4 +1,4 @@
-import { useAppDispatch } from "./useStoreHooks";
+import { useAppDispatch } from "./";
 import {
   setTutoresReducer,
   updateTutorReducer,
@@ -18,8 +18,8 @@ export const useUsersActions = () => {
     dispatch(updateTutorReducer(tutor));
   };
 
-  const deleteTutor = (id_usuario:number) => {
-    dispatch(deleteTutorReducer(id_usuario));
+  const deleteTutor = (tutor:User) => {
+    dispatch(deleteTutorReducer(tutor));
   };
 
   const restTutores = () => {

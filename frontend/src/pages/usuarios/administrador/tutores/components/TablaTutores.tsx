@@ -14,18 +14,20 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "@common/components/StyledTable";
-import { useAppSelector } from "@common/store/hooks/useStoreHooks";
+import { useAppSelector } from "@common/store/hooks";
 import { useEffect, useState } from "react";
-import { getUsuarios } from "../services/getUsuarios";
-import { useUsersActions } from "@common/store/hooks/useUsersActions";
+import { getUsuarios } from "../services";
+import { useUsersActions } from "@common/store/hooks";
 import ModalUpdateForm from "./ModalUpdateForm";
-import { useModal } from "@common/hooks/useModal";
+import { useModal } from "@common/hooks";
+import Swal from "sweetalert2";
+import { User } from "@common/interfaces/User";
 
 export default function TablaTutores() {
   const [tutor, setTutor] = useState({});
   const modalUpdate = useModal(false);
   const { tutores } = useAppSelector((state) => state.tutores);
-  const { setTutores } = useUsersActions();
+  const { setTutores, deleteTutor } = useUsersActions();
 
   useEffect(() => {
     getUsuarios().then((res) => {
@@ -37,6 +39,22 @@ export default function TablaTutores() {
       }
     });
   }, []);
+
+  const clickDeleteTutor = (user: User) => {
+    Swal.fire({
+      title: "¿Estas seguro de eliminar este tutor?",
+      text: "No podras revertir esta accion",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, eliminar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteTutor(user);
+      }
+    });
+  };
 
   return (
     <>
@@ -82,7 +100,7 @@ export default function TablaTutores() {
                       >
                         <EditIcon />
                       </Button>
-                      <Button variant="contained" color="error" sx={{ ml: 1 }}>
+                      <Button variant="contained" color="error" sx={{ ml: 1 }} onClick={() => clickDeleteTutor(row)}>
                         <DeleteIcon />
                       </Button>
                     </StyledTableCell>
