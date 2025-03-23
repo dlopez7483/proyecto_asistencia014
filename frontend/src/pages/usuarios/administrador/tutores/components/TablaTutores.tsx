@@ -84,7 +84,7 @@ export default function TablaTutores() {
                   {row.Codigo_RFID}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <div style={{ display: "flex", gap: "10px" }}>
+                  <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>  
                     <Button
                       variant="contained"
                       onClick={() => {
