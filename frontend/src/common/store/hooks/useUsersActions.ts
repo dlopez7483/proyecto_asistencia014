@@ -4,6 +4,7 @@ import {
   updateTutorReducer,
   deleteTutorReducer,
   restTutoresReducer,
+  setCurrentUserReducer,
 } from "../slices/usersSlice";
 import { User } from "@common/interfaces/User";
 
@@ -26,10 +27,15 @@ export const useUsersActions = () => {
     dispatch(restTutoresReducer());
   };
 
+  const setCurrentUser = (user:User) => {
+    dispatch(setCurrentUserReducer(user));
+  }
+
   return {
     setTutores,
     updateTutor,
     deleteTutor,
     restTutores,
+    setCurrentUser
   };
 };

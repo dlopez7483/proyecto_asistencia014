@@ -23,7 +23,6 @@ export const SyncDB: Middleware = (store) => (next) => (action) => {
     if (payload.Password) tutorToUpdate.set("contrasenia", payload.Password);
 
     updateTutor(tutorToUpdate, payload.Id_auxiliar).then((response) => {
-      console.log(previousState);
       if (response.status !== 200) {
         const prevTutor = previousState.tutores.tutores.find(
           (tutor: User) => tutor.Id_auxiliar === payload.Id_auxiliar
@@ -33,7 +32,6 @@ export const SyncDB: Middleware = (store) => (next) => (action) => {
     });
   } else if (type === "tutor/deleteTutorReducer") {
     deleteTutor(payload.Carne).then((response) => {
-      console.log(response);
       if (response.status !== 200) {
         const previousTutores = previousState.tutores.tutores;
         const tutorToDelete = previousTutores.find(

@@ -6,7 +6,6 @@ export const updateTutor = async (
   id: number
 ) => {
   try {
-    console.log(tutor);
     const res = await service.put(
       `/user/Editar_practicante/${id}`,
       Object.fromEntries(tutor),

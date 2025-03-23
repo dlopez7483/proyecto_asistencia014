@@ -56,7 +56,6 @@ export default function ModalRegistrarForm({ modal }: { modal: any }) {
             setTutores(res.auxiliares);
           } else {
             setTutores([]);
-            console.log(res);
           }
         });
         formReset();

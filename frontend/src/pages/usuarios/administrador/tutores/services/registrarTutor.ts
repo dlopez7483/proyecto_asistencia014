@@ -12,8 +12,7 @@ export const registrarTutor = async (data: User) => {
     codigo_rfid: data.Codigo_RFID,
     id_rol: 2,
   };
-
-  console.log(body);
+  
   try {
     const res = await service.post("/user/admin/register", body, {
       headers: {

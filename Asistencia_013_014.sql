@@ -16,7 +16,7 @@ CREATE TABLE Auxiliar(
     Contrasenia VARCHAR(255) NOT NULL,
     Codigo_RFID VARCHAR(255) NULL,
     Id_rol INT NOT NULL,
-    FOREIGN KEY (Id_rol) REFERENCES Rol(Id_rol)
+    FOREIGN KEY (Id_rol) REFERENCES Rol(Id_rol) -- Admin: 1 Tutor 2
 );
 
 CREATE TABLE Horario(
