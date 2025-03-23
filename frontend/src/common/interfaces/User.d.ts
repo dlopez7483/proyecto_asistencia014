@@ -9,4 +9,4 @@ interface User {
   Id_rol?: number;
 }
 
-export { User, UserLogged };
+export { User };

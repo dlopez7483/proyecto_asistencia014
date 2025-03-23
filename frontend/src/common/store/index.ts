@@ -1,7 +1,8 @@
-import authSlice from "@common/store/slices/authSlice";
-import usersSlice from "@common/store/slices/usersSlice";
+
 import { configureStore } from "@reduxjs/toolkit";
 import { SyncDB } from "@common/store/middlewares/SyncDB";
+import authSlice from "./slices/authSlice";
+import usersSlice from "./slices/usersSlice";
 
 export const store = configureStore({
   reducer: {

@@ -1,14 +1,12 @@
 import service from "@common/services/Service";
 import { AxiosError } from "axios";
 
-export const updateTutor = async (
-  tutor: Map<string, string | number>,
+export const deleteTutor = async (
   id: number
 ) => {
   try {
-    const res = await service.put(
-      `/user/Editar_practicante/${id}`,
-      Object.fromEntries(tutor),
+    const res = await service.delete(
+      `/user/eliminar_practicante/admin/${id}`,
       {
         headers: {
           Authorization:

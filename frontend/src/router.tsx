@@ -4,6 +4,7 @@ import Login from "@pages/login";
 import Administrador from "@pages/usuarios/administrador";
 import Tutor from "@pages/usuarios/tutor";
 import AdminTutores from "@pages/usuarios/administrador/tutores";
+import AdminHorarios from "@pages/usuarios/administrador/horarios";
 //import AuthVerification from "@common/components/AuthVerification";
 
 const router = createBrowserRouter([
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
       },
       {
         path: "horarios",
-        element: <div>Horarios</div>,
+        element: <AdminHorarios />,
       },
       {
         path: "reportes",

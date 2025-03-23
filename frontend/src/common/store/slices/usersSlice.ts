@@ -32,9 +32,9 @@ const userSlice = createSlice({
       );
       state.tutores[index] = {...state.tutores[index], ...action.payload};
     },
-    deleteTutorReducer(state, action: PayloadAction<number>) {
+    deleteTutorReducer(state, action: PayloadAction<User>) {
       state.tutores = state.tutores.filter(
-        (tutor) => tutor.Id_auxiliar !== action.payload
+        (tutor) => tutor.Id_auxiliar !== action.payload.Id_auxiliar
       );
     },
     restTutoresReducer(state) {
@@ -51,7 +51,10 @@ const userSlice = createSlice({
         (tutor) => tutor.Id_auxiliar === action.payload.Id_auxiliar
       );
       state.tutores[index] = action.payload;
-    }
+    },
+    setCurrentUserReducer(state, action: PayloadAction<User>) {
+      state.currentTutor = action.payload;
+    },
   },
 });
 
@@ -62,5 +65,6 @@ export const {
   deleteTutorReducer,
   restTutoresReducer,
   rollbackFromDeleteTutoresReducer,
-  rollbackFromUpdateTutoresReducer
+  rollbackFromUpdateTutoresReducer,
+  setCurrentUserReducer,
 } = userSlice.actions;

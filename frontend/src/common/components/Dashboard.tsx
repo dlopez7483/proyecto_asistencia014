@@ -5,14 +5,13 @@ import type { Branding } from "@toolpad/core";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import { Outlet } from "react-router-dom";
-import { OutherTheme } from "../styles/OutherTheme";
 import { ThemeProvider } from "@mui/material";
-import { InnerTheme } from "../styles/InnerTheme";
+
 import React from "react";
-import { useAppSelector } from "@common/store/hooks/useStoreHooks";
-import { useAuthActions } from "@common/store/hooks/useAuthActions";
-import CustomAccount from "./CustomAccount";
+import { useAppSelector, useAuthActions } from "@common/store/hooks";
 import logoutFunction from "@common/services/logoutFunction";
+import CustomAccount from "./CustomAccount";
+import { InnerTheme, OutherTheme } from "@common/styles";
 
 interface Props {
   branding: Branding;

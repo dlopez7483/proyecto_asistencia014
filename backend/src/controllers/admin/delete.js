@@ -24,18 +24,18 @@ exports.deleteAuxiliar = async (req, res) => {
 
         const id_auxiliar = rows[0].Id_auxiliar;
 
+        // Eliminar relaciones en auxiliar_horario
+        await connection.execute(`DELETE FROM Auxiliar_Horario WHERE Id_auxiliar = ?;`, [id_auxiliar]);
+
         // Obtener todos los Id_horario relacionados con el auxiliar
         const queryGetHorario = `SELECT Id_horario FROM Auxiliar_Horario WHERE Id_auxiliar = ?;`;
         const [horarios] = await connection.execute(queryGetHorario, [id_auxiliar]);
 
         if (horarios.length > 0) {
             const idsHorario = horarios.map(h => h.Id_horario);
-            const queryDeleteHorario = `DELETE FROM horario WHERE Id_horario IN (${idsHorario.map(() => '?').join(',')});`;
+            const queryDeleteHorario = `DELETE FROM Horario WHERE Id_horario IN (${idsHorario.map(() => '?').join(',')});`;
             await connection.execute(queryDeleteHorario, idsHorario);
         }
-
-        // Eliminar relaciones en auxiliar_horario
-        await connection.execute(`DELETE FROM Auxiliar_Horario WHERE Id_auxiliar = ?;`, [id_auxiliar]);
 
         // Eliminar al auxiliar de la tabla `Auxiliar`
         const queryDeleteAuxiliar = `DELETE FROM Auxiliar WHERE Id_auxiliar = ?;`;
