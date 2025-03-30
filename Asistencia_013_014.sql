@@ -70,7 +70,7 @@ INSERT INTO Rol(Rol) VALUES('Auxiliar');
 INSERT INTO Configuracion(Periodo_horarios) VALUES('1');
 
 INSERT INTO Auxiliar (Nombre, Apellido, Carne, Telefono, Contrasenia, Id_rol) 
-VALUES ("Bryan", "Vasquez", "201907483", "59453475", "$2a$12$NkhTkuAsmBzlXPME/oRJA.a9insU72zSX.0Kscj/YBmpBT2qZQ59S", 1);
+VALUES ("Bryan", "Vasquez", "1", "59453475", "$2a$12$NkhTkuAsmBzlXPME/oRJA.a9insU72zSX.0Kscj/YBmpBT2qZQ59S", 1);
 SELECT * FROM Auxiliar;
 
 

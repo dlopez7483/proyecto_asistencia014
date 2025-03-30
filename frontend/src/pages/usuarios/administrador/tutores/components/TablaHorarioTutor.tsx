@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { getHorariosTutor } from "../services/getHorariosTutor";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 //import { useModal } from "@common/hooks";
 import { useEffect, useState } from "react";
 import {
@@ -19,9 +20,10 @@ import {
   StyledTableRow,
 } from "@common/components/StyledTable";
 import { useAppSelector } from "@common/store/hooks";
+import { deleteSchedule } from "../services";
+
 
 const columns: Array<string> = [
-  "ID",
   "Día",
   "Hora de Entrada",
   "Hora de Salida",
@@ -30,7 +32,6 @@ const columns: Array<string> = [
 export default function TablaHorarioTutor() {
   const { currentTutor } = useAppSelector((state) => state.tutores);
   const [userData, setUserData] = useState({
-    user: "",
     rows: Array<any>(),
   });
   //const { modalOpen, handleOpen, handleClose } = useModal(false);
@@ -40,17 +41,28 @@ export default function TablaHorarioTutor() {
     getHorariosTutor(currentTutor.Carne).then((res) => {
       if (res.status === 200) {
         setUserData({
-          user: `${res.carne} - ${res.nombre}`,
           rows: res.horarios,
         });
       } else {
         setUserData({
-          user: "",
           rows: [],
         });
       }
     });
   }, [currentTutor]);
+
+  const handleDelete = (id: number) => {
+    deleteSchedule(id).then((res) => {
+      if (res.status === 200) {
+        setUserData((prevState) => ({
+          ...prevState,
+          rows: prevState.rows.filter((row) => row.Id_horario !== id),
+        }));
+      } else {
+        console.log("Error deleting schedule:", res);
+      }
+    });
+  }
 
   return (
     <>
@@ -76,9 +88,6 @@ export default function TablaHorarioTutor() {
               {userData.rows.map((row: any) => (
                 <StyledTableRow key={row.Id_horario}>
                   <StyledTableCell align="left">
-                    {row.Id_horario}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
                     {row.Dia_semana}
                   </StyledTableCell>
                   <StyledTableCell align="left">
@@ -88,7 +97,7 @@ export default function TablaHorarioTutor() {
                     {row.Hora_salida}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <div style={{ display: "flex", gap: "10px" }}>
+                    <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
                       <Button
                         variant="contained"
                         onClick={() => {
@@ -96,6 +105,15 @@ export default function TablaHorarioTutor() {
                         }}
                       >
                         <EditIcon />
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => {
+                          handleDelete(row.Id_horario);
+                        }}
+                      >
+                        <DeleteIcon />
                       </Button>
                     </div>
                   </StyledTableCell>

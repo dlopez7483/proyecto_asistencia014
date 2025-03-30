@@ -1,4 +1,4 @@
-import { Button, Paper, Typography } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useModal } from "@common/hooks";
 import {
@@ -26,7 +26,7 @@ export default function AdminTutores() {
 
   return (
     <>
-      <Paper sx={{ padding: "10px", margin: "10px" }}>
+      <Container sx={{ margin: "10px" }}>
         <Button
           variant="contained"
           color="success"
@@ -37,13 +37,13 @@ export default function AdminTutores() {
           Registrar
         </Button>
         <TablaTutores />
-      </Paper>
-      <Paper sx={{ padding: "10px", margin: "10px" }}>
-        <Typography variant="h5" component="h2">
+      </Container>
+      <Container sx={{ margin: "10px" }}>
+        <Typography variant="h5" component="h2" sx={{ margin: "10px" }}>
           Horarios por Tutor
         </Typography>
         <TablaHorarioTutor />
-      </Paper>
+      </Container>
       <ModalRegistrarForm modal={modal} />
     </>
   );

@@ -2,7 +2,6 @@ import { Button, ButtonGroup, Chip, Paper, Typography } from "@mui/material";
 import { changeEstadoPeriodoHorarios } from "../services";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
-import { Label } from "@mui/icons-material";
 
 export default function BtnPeriodoHorarios() {
   const {
@@ -80,7 +79,7 @@ export default function BtnPeriodoHorarios() {
   return (
     <Paper sx={{ padding: "10px", margin: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
       <Typography variant="h5" sx={{ mr: "10px" }}>
-        Periodo de Horarios
+        Estado del Periodo de Horarios
         <Chip sx={{ ml: 1 }} {...estado} variant="outlined" />
       </Typography>
       <ButtonGroup variant="text">

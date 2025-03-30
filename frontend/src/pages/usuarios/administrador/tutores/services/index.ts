@@ -1,6 +1,6 @@
 import { getUsuarios } from "./getUsuarios";
 import { registrarTutor } from "./registrarTutor";
-import { changeEstadoPeriodoHorarios } from "../../tutores/services/changeEstadoPeriodo";
-import { getHorariosTutor } from "../../tutores/services/getHorariosTutor";
+import { getHorariosTutor } from "./getHorariosTutor";
+import { deleteSchedule } from "./deleteSchedule";
 
-export { getUsuarios, registrarTutor, changeEstadoPeriodoHorarios, getHorariosTutor };
+export { getUsuarios, registrarTutor, getHorariosTutor, deleteSchedule };
