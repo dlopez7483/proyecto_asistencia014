@@ -6,18 +6,15 @@ export default function formatDate(horarios: EventC[]) {
   const events: FormatEventC[] = [];
   const daysOfWeek = getCurrentWeekDays();
 
+  console.log(daysOfWeek)
+
   horarios.forEach((horario) => {
-    const start = new Date();
-    const end = new Date();
+    const day = daysOfWeek.at(getDayIndex(horario.Dia_semana));
 
-    const diaSemana = daysOfWeek.find(
-      (dia) => dia.getDay() === getDayIndex(horario.Dia_semana)
-    );
-    if (diaSemana) {
-      start.setDate(diaSemana.getDate());
-      end.setDate(diaSemana.getDate());
-    }
+    if (!day) return;
 
+    const start = day;
+    const end = day;
     const arrayStart = horario.Hora_entrada.split(":");
     const arrayEnd = horario.Hora_salida.split(":");
 

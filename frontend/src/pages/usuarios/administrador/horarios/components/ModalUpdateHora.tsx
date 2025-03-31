@@ -8,7 +8,7 @@ import { ModalStyle } from "@common/styles";
 import { useField } from "@common/hooks";
 import { useUsersActions } from "@common/store/hooks";
 import { User } from "@common/interfaces/User";
-import { useInputTelefono } from "../hooks/useInputTelefono";
+import { useInputTelefono } from "../../tutores/hooks/useInputTelefono";
 
 export default function ModalUpdateHora({
   modal,

@@ -8,7 +8,6 @@ export default function useCalendar() {
 
   useEffect(() => {
     getAllSchedules().then((response) => {
-      console.log("horarios", response.horarios);
       setHorarios(formatDate(response.horarios));
     });
   }, []);
