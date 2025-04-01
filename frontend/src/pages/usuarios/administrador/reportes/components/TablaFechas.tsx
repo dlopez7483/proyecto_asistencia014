@@ -13,6 +13,7 @@ import {
     TableRow,
     Typography,
   } from "@mui/material";
+import { formatDate } from "../utils/formatDate";
   
   export default function TablaFechas({
     horasFechas,
@@ -37,7 +38,7 @@ import {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column} align="left">
+                  <TableCell key={columns.indexOf(column)} align="left">
                     {column}
                   </TableCell>
                 ))}
@@ -46,7 +47,7 @@ import {
             <TableBody>
               {horasFechas.map((row: any) => (
                 <StyledTableRow
-                  key={row}
+                  key={horasFechas.indexOf(row)}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <StyledTableCell component="th" scope="row">
@@ -56,10 +57,7 @@ import {
                     {row.Apellido}
                   </StyledTableCell>
                   <StyledTableCell align="left">
-                    {row.carne}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
-                    {row.Fecha}
+                    {formatDate(row.Fecha).split(", ")[0]}
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     {row.Horas_completadas}

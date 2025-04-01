@@ -61,7 +61,7 @@ export default function TablaTutores() {
           <TableBody>
             {tutores.map((row) => (
               <StyledTableRow
-                key={row.Id_auxiliar}
+                key={tutores.indexOf(row)}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 onClick={() => {
                   setCurrentUser(row);
