@@ -21,20 +21,17 @@ import {
 } from "@common/components/StyledTable";
 import { useAppSelector } from "@common/store/hooks";
 import { deleteSchedule } from "../services";
+import ModalUpdateHora from "./ModalUpdateHora";
+import { useModal } from "@common/hooks";
 
-
-const columns: Array<string> = [
-  "Día",
-  "Hora de Entrada",
-  "Hora de Salida",
-];
+const columns: Array<string> = ["Día", "Hora de Entrada", "Hora de Salida"];
 
 export default function TablaHorarioTutor() {
   const { currentTutor } = useAppSelector((state) => state.tutores);
   const [userData, setUserData] = useState({
     rows: Array<any>(),
   });
-  //const { modalOpen, handleOpen, handleClose } = useModal(false);
+  const modal = useModal(false, {});
 
   useEffect(() => {
     if (!currentTutor.Carne) return;
@@ -62,7 +59,7 @@ export default function TablaHorarioTutor() {
         console.log("Error deleting schedule:", res);
       }
     });
-  }
+  };
 
   return (
     <>
@@ -97,11 +94,18 @@ export default function TablaHorarioTutor() {
                     {row.Hora_salida}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        justifyContent: "center",
+                      }}
+                    >
                       <Button
                         variant="contained"
                         onClick={() => {
-                          //handleOpen();
+                          modal.handleOpen();
+                          modal.setData(row);
                         }}
                       >
                         <EditIcon />
@@ -123,6 +127,7 @@ export default function TablaHorarioTutor() {
           </Table>
         </TableContainer>
       </Box>
+      <ModalUpdateHora modal={modal} setUserData={setUserData} />
     </>
   );
 }

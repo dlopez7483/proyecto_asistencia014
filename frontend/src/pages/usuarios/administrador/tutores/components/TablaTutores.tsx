@@ -16,7 +16,6 @@ import {
   StyledTableRow,
 } from "@common/components/StyledTable";
 import { useAppSelector } from "@common/store/hooks";
-import { useState } from "react";
 import { useUsersActions } from "@common/store/hooks";
 import ModalUpdateForm from "./ModalUpdateForm";
 import { useModal } from "@common/hooks";
@@ -24,8 +23,7 @@ import Swal from "sweetalert2";
 import { User } from "@common/interfaces/User";
 
 export default function TablaTutores() {
-  const [tutor, setTutor] = useState({});
-  const modalUpdate = useModal(false);
+  const modalUpdate = useModal(false, {});
   const { tutores, currentTutor } = useAppSelector((state) => state.tutores);
   const { deleteTutor, setCurrentUser } = useUsersActions();
 
@@ -84,12 +82,18 @@ export default function TablaTutores() {
                   {row.Codigo_RFID}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>  
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      justifyContent: "center",
+                    }}
+                  >
                     <Button
                       variant="contained"
                       onClick={() => {
-                        setTutor(row);
                         modalUpdate.handleOpen();
+                        modalUpdate.setData(row);
                       }}
                     >
                       <EditIcon />
@@ -108,7 +112,7 @@ export default function TablaTutores() {
           </TableBody>
         </Table>
       </TableContainer>
-      <ModalUpdateForm tutor={tutor} modal={modalUpdate} />
+      <ModalUpdateForm modal={modalUpdate} />
     </>
   );
 }
