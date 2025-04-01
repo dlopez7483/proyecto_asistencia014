@@ -2,54 +2,56 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Button, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 import { ModalStyle } from "@common/styles";
-import { useField } from "@common/hooks";
-import { useUsersActions } from "@common/store/hooks";
-import { User } from "@common/interfaces/User";
-import { useInputTelefono } from "../hooks/useInputTelefono";
+import { useAppSelector } from "@common/store/hooks";
+import { updateHorario } from "../services/updateHorario";
 
 export default function ModalUpdateHora({
   modal,
-  tutor,
+  setUserData,
 }: {
   modal: any;
-  tutor: User;
+  setUserData: any;
 }) {
-  const { telefono, setTelefono, handleChangeTelefono } = useInputTelefono("");
-  const { updateTutor } = useUsersActions();
-
-  const carnet = useField("text", "Carnet", "");
-  const nombre = useField("text", "Nombre", "");
-  const apellido = useField("text", "Apellido", "");
-  const password = useField("password", "Password", "");
-  const rfid = useField("text", "RFID", "");
-
-  function formReset() {
-    carnet.setValue("");
-    nombre.setValue("");
-    apellido.setValue("");
-    password.setValue("");
-    rfid.setValue("");
-    setTelefono({ value: "", error: false, helperText: "" });
-  }
+  const currentTutor = useAppSelector((state) => state.tutores.currentTutor);
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const tutorInfo: User = { Id_auxiliar: tutor.Id_auxiliar };
-    if (carnet.props.value != "") tutorInfo.Carne = carnet.props.value;
-    if (nombre.props.value != "") tutorInfo.Nombre = nombre.props.value;
-    if (apellido.props.value != "") tutorInfo.Apellido = apellido.props.value;
-    if (password.props.value != "")
-      tutorInfo.Contrasenia = password.props.value;
-    if (telefono.value != "") tutorInfo.Telefono = telefono.value;
-    if (rfid.props.value != "") tutorInfo.Codigo_RFID = rfid.props.value;
+    console.log(modal.data);
+    console.log(currentTutor.Carne);
 
-    updateTutor(tutorInfo);
-    formReset();
-    modal.handleClose();
+    updateHorario(modal.data, String(currentTutor.Carne), modal.data.Id_horario).then(
+      (res) => {
+        if (res.status === 200) {
+          setUserData((prevState: any) => ({
+            ...prevState,
+            rows: prevState.rows.map((row: any) => {
+              if (row.Id_horario === modal.data.Id_horario) {
+                return {
+                  ...row,
+                  Dia_semana: modal.data.Dia_semana,
+                  Hora_entrada: modal.data.Hora_entrada,
+                  Hora_salida: modal.data.Hora_salida,
+                };
+              }
+              return row;
+            }),
+          }));
+          modal.handleClose();
+        } else {
+          console.log("Error al actualizar horario:", res);
+        }
+      }
+    );
   }
 
   return (
@@ -76,22 +78,59 @@ export default function ModalUpdateHora({
             onSubmit={onSubmit}
           >
             <div style={{ textAlign: "center" }}>
-              <TextField {...carnet.props} placeholder={tutor.Carne} />
-              <TextField {...nombre.props} placeholder={tutor.Nombre} />
+              <FormControl fullWidth>
+                <InputLabel id="select-dia-label">Dia de la Semana</InputLabel>
+                <Select
+                  labelId="select-dia"
+                  id="demo-simple-select"
+                  value={modal.data.Dia_semana}
+                  label="Dia de la Semana"
+                  onChange={(e) => {
+                    modal.setData({
+                      ...modal.data,
+                      Dia_semana: e.target.value,
+                    });
+                  }}
+                >
+                  <MenuItem value="Lunes">Lunes</MenuItem>
+                  <MenuItem value="Martes">Martes</MenuItem>
+                  <MenuItem value="Miércoles">Miércoles</MenuItem>
+                  <MenuItem value="Jueves">Jueves</MenuItem>
+                  <MenuItem value="Viernes">Viernes</MenuItem>
+                  <MenuItem value="Sábado">Sábado</MenuItem>
+                  <MenuItem value="Domingo">Domingo</MenuItem>
+                </Select>
+              </FormControl>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <TextField {...apellido.props} placeholder={tutor.Apellido} />
-              <TextField {...password.props} />
-            </div>
-            <div style={{ textAlign: "center" }}>
-              <TextField
-                type="number"
-                placeholder={tutor.Telefono}
-                label="Telefono"
-                {...telefono}
-                onChange={handleChangeTelefono}
+            <div style={{ textAlign: "center", margin: "1rem 0" }}>
+              <input
+                className="form-control"
+                type="time"
+                name="hora_inicio"
+                value={modal.data.Hora_entrada}
+                onChange={(e) => {
+                  modal.setData({
+                    ...modal.data,
+                    Hora_entrada: e.target.value,
+                  });
+                }}
+                required
               />
-              <TextField {...rfid.props} placeholder={tutor.Codigo_RFID} />
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <input
+                className="form-control"
+                type="time"
+                name="hora_fin"
+                value={modal.data.Hora_salida}
+                onChange={(e) => {
+                  modal.setData({
+                    ...modal.data,
+                    Hora_salida: e.target.value,
+                  });
+                }}
+                required
+              />
             </div>
             <div
               style={{

@@ -1,16 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 
+export const useModal = (isOpen: boolean, object: any = null) => {
+  const [modal, setModal] = React.useState({ open: isOpen, data: object });
 
-export const useModal = (isOpen:boolean) => {
-    const [open, setOpen] = React.useState(isOpen);
+  const handleOpen = () => setModal((prev) => ({ ...prev, open: true }));
 
-    const handleOpen = () => setOpen(true);
+  const handleClose = () => setModal((prev) => ({ ...prev, open: false }));
 
-    const handleClose = () => setOpen(false);
-    
-    return {
-        open,
-        handleOpen,
-        handleClose
-    };
-}
+  const setData = (data: any) => setModal((prev) => ({ ...prev, data }));
+
+  return {
+    open: modal.open,
+    handleOpen,
+    handleClose,
+    data: modal.data,
+    setData,
+  };
+};

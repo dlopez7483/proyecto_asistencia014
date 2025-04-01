@@ -1,10 +1,11 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import Login from "@pages/login";
 import Administrador from "@pages/usuarios/administrador";
 import Tutor from "@pages/usuarios/tutor";
 import AdminTutores from "@pages/usuarios/administrador/tutores";
 import AdminHorarios from "@pages/usuarios/administrador/horarios";
+import Reportes from "@pages/usuarios/administrador/reportes";
 //import AuthVerification from "@common/components/AuthVerification";
 
 const router = createBrowserRouter([
@@ -23,7 +24,8 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <div>Dashboard</div>,
+        element: <Navigate to="tutores" />,
+        
       },
       {
         path: "tutores",
@@ -35,7 +37,7 @@ const router = createBrowserRouter([
       },
       {
         path: "reportes",
-        element: <div>Reportes</div>,
+        element: <Reportes />,
       },
     ],
   },

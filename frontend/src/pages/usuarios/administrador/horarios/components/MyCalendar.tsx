@@ -1,11 +1,8 @@
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
-import "dayjs/locale/es";
-
-dayjs.locale("es");
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import useCalendar from "../hooks/useCalendar";
+import { useCalendar } from "../hooks/useCalendar";
 
 export default function MyCalendar() {
   const localizer = dayjsLocalizer(dayjs);

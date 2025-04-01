@@ -10,13 +10,7 @@ import { useUsersActions } from "@common/store/hooks";
 import { User } from "@common/interfaces/User";
 import { useInputTelefono } from "../hooks/useInputTelefono";
 
-export default function ModalUpdateForm({
-  modal,
-  tutor,
-}: {
-  modal: any;
-  tutor: User;
-}) {
+export default function ModalUpdateForm({ modal }: { modal: any }) {
   const { telefono, setTelefono, handleChangeTelefono } = useInputTelefono("");
   const { updateTutor } = useUsersActions();
 
@@ -38,7 +32,7 @@ export default function ModalUpdateForm({
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const tutorInfo: User = { Id_auxiliar: tutor.Id_auxiliar };
+    const tutorInfo: User = { Id_auxiliar: modal.data.Id_auxiliar };
     if (carnet.props.value != "") tutorInfo.Carne = carnet.props.value;
     if (nombre.props.value != "") tutorInfo.Nombre = nombre.props.value;
     if (apellido.props.value != "") tutorInfo.Apellido = apellido.props.value;
@@ -76,22 +70,25 @@ export default function ModalUpdateForm({
             onSubmit={onSubmit}
           >
             <div style={{ textAlign: "center" }}>
-              <TextField {...carnet.props} placeholder={tutor.Carne} />
-              <TextField {...nombre.props} placeholder={tutor.Nombre} />
+              <TextField {...carnet.props} placeholder={modal.data.Carne} />
+              <TextField {...nombre.props} placeholder={modal.data.Nombre} />
             </div>
             <div style={{ textAlign: "center" }}>
-              <TextField {...apellido.props} placeholder={tutor.Apellido} />
+              <TextField
+                {...apellido.props}
+                placeholder={modal.data.Apellido}
+              />
               <TextField {...password.props} />
             </div>
             <div style={{ textAlign: "center" }}>
               <TextField
                 type="number"
-                placeholder={tutor.Telefono}
+                placeholder={modal.data.Telefono}
                 label="Telefono"
                 {...telefono}
                 onChange={handleChangeTelefono}
               />
-              <TextField {...rfid.props} placeholder={tutor.Codigo_RFID} />
+              <TextField {...rfid.props} placeholder={modal.data.Codigo_RFID} />
             </div>
             <div
               style={{
