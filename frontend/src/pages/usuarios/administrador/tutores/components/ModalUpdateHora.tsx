@@ -26,9 +26,6 @@ export default function ModalUpdateHora({
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    console.log(modal.data);
-    console.log(currentTutor.Carne);
-
     updateHorario(modal.data, String(currentTutor.Carne), modal.data.Id_horario).then(
       (res) => {
         if (res.status === 200) {

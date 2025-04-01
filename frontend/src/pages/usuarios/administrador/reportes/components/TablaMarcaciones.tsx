@@ -13,6 +13,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { formatDate } from "../utils/formatDate";
+
+
 
 export default function TablaMarcaciones({
   marcaciones,
@@ -22,7 +25,7 @@ export default function TablaMarcaciones({
   const columns = [
     "Nombre",
     "Apellido",
-    "Carne",
+    "Fecha",
     "Hora Entrada",
     "Hora Salida",
   ];
@@ -37,7 +40,7 @@ export default function TablaMarcaciones({
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableCell key={column} align="left">
+                <TableCell key={columns.indexOf(column)} align="left">
                   {column}
                 </TableCell>
               ))}
@@ -46,7 +49,7 @@ export default function TablaMarcaciones({
           <TableBody>
             {marcaciones.map((row: any) => (
               <StyledTableRow
-                key={row}
+                key={marcaciones.indexOf(row)}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <StyledTableCell component="th" scope="row">
@@ -56,16 +59,13 @@ export default function TablaMarcaciones({
                   {row.Apellido}
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  {row.carne}
+                  {formatDate(row.Fecha).split(", ")[0]}
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  {row.Fecha}
+                  {formatDate(row.Hora_entrada).split(", ")[1]}
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  {row.Hora_entrada}
-                </StyledTableCell>
-                <StyledTableCell align="left">
-                  {row.Hora_salida}
+                  {formatDate(row.Hora_salida).split(", ")[1]}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

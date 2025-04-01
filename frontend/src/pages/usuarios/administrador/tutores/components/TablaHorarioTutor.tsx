@@ -72,7 +72,7 @@ export default function TablaHorarioTutor() {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column} align="left">
+                  <TableCell key={columns.indexOf(column)} align="left">
                     {column}
                   </TableCell>
                 ))}
@@ -83,7 +83,7 @@ export default function TablaHorarioTutor() {
             </TableHead>
             <TableBody>
               {userData.rows.map((row: any) => (
-                <StyledTableRow key={row.Id_horario}>
+                <StyledTableRow key={userData.rows.indexOf(row)}>
                   <StyledTableCell align="left">
                     {row.Dia_semana}
                   </StyledTableCell>
