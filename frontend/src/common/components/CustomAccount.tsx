@@ -6,22 +6,29 @@ import {
   Account,
 } from "@toolpad/core/Account";
 import EditIcon from "@mui/icons-material/Edit";
+import { Link } from "react-router-dom";
 
 function CustomAccountMenu() {
+
   return (
     <Stack direction="column">
       <AccountPreview variant="expanded" />
       <Divider />
       <MenuList>
-        <Button
-          variant="text"
-          sx={{ textTransform: "capitalize", display: "flex", mx: "auto" }}
-          size="small"
-          startIcon={<EditIcon />}
-          disableElevation
+        <Link
+          to={"./perfil"}
+          style={{ textDecoration: "none" }}
         >
-          Aditar perfil
-        </Button>
+          <Button
+            variant="text"
+            sx={{ textTransform: "capitalize", display: "flex", mx: "auto" }}
+            size="small"
+            startIcon={<EditIcon />}
+            disableElevation
+          >
+            Editar perfil
+          </Button>
+        </Link>
       </MenuList>
       <Divider />
       <AccountPopoverFooter>
@@ -32,7 +39,11 @@ function CustomAccountMenu() {
 }
 
 export default function CustomAccount() {
-  return <Account slots={{
-    popoverContent: CustomAccountMenu
-  }} />;
+  return (
+    <Account
+      slots={{
+        popoverContent: CustomAccountMenu,
+      }}
+    />
+  );
 }
