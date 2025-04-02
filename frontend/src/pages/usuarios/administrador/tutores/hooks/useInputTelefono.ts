@@ -7,21 +7,26 @@ export const useInputTelefono = (initialValue: string) => {
     helperText: "",
   });
 
+  const validarTelefono = (value: string) => {
+    const telefonoRegex = /^\d{8}$/;
+    return !telefonoRegex.test(value);
+  };
+
   const handleChangeTelefono = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
+    const isNotValid = validarTelefono(newValue);
 
     setTelefono((prevTelefono) => ({
       ...prevTelefono,
       value: newValue,
-      error: newValue.length < 8,
-      helperText: newValue.length < 8 ? "Telefono invalido" : "",
+      error: isNotValid,
+      helperText: isNotValid ? "Telefono invalido" : "",
     }));
-
   };
 
   return {
     telefono,
     handleChangeTelefono,
-    setTelefono
+    setTelefono,
   };
 };

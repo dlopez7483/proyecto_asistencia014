@@ -7,7 +7,7 @@ import { PageContainer } from "@toolpad/core/PageContainer";
 import { Outlet } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppSelector, useAuthActions } from "@common/store/hooks";
 import logoutFunction from "@common/services/logoutFunction";
 import CustomAccount from "./CustomAccount";
@@ -20,7 +20,7 @@ interface Props {
 
 export default function Dashboard(props: Props) {
   const { deleteAuthAction } = useAuthActions();
-  const currentAuth = useAppSelector((state) => state.auth);
+  const { auth } = useAppSelector((state) => state);
 
   const authentication = React.useMemo(() => {
     return {
@@ -46,7 +46,7 @@ export default function Dashboard(props: Props) {
       authentication={authentication}
       session={{
         user: {
-          name: currentAuth.carne,
+          name: auth.carne,
         },
       }}
     >
