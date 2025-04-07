@@ -1,23 +1,43 @@
-import { useEffect, useState } from 'react';
-import { getReporteHorasIndividual } from './services/serviceHorario';
-import { postHorarioAuxiliar } from './services/serviceAgregarHorario'; 
-import { deleteSchedule } from './services/deletehorario'; // Importa el servicio de eliminación
-import { updateHorario } from './services/updateHorario'; // Importa el servicio de actualización
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography, Button, Modal, TextField, Box, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete'; // Ícono de eliminar
+import { useEffect, useState } from "react";
+import { getReporteHorasIndividual } from "./services/serviceHorario";
+import { postHorarioAuxiliar } from "./services/serviceAgregarHorario";
+import { deleteSchedule } from "./services/deletehorario"; // Importa el servicio de eliminación
+import { updateHorario } from "./services/updateHorario"; // Importa el servicio de actualización
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Typography,
+  Button,
+  Modal,
+  TextField,
+  Box,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete"; // Ícono de eliminar
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 // Estilo para el modal
 const modalStyle = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
-  maxWidth: '500px',
-  width: '100%',
+  maxWidth: "500px",
+  width: "100%",
 };
 
 const HorariosAuxiliar = () => {
@@ -27,23 +47,25 @@ const HorariosAuxiliar = () => {
 
   // Estados para el modal
   const [open, setOpen] = useState<boolean>(false);
-  const [diaSemana, setDiaSemana] = useState<string>('');
-  const [horaEntrada, setHoraEntrada] = useState<string>('');
-  const [horaSalida, setHoraSalida] = useState<string>('');
+  const [diaSemana, setDiaSemana] = useState<string>("");
+  const [horaEntrada, setHoraEntrada] = useState<string>("");
+  const [horaSalida, setHoraSalida] = useState<string>("");
   const [adding, setAdding] = useState<boolean>(false);
+
+  const navigate = useNavigate(); // Navegación para redirigir al usuario
 
   useEffect(() => {
     const fetchHorarios = async () => {
       try {
         const data = await getReporteHorasIndividual();
-        console.log('Datos obtenidos de la API:', data); // Log para inspeccionar los datos
+        console.log("Datos obtenidos de la API:", data); // Log para inspeccionar los datos
         if (data.status === 200 && Array.isArray(data.horarios)) {
           setHorariosData(data); // Solo asignamos si hay la propiedad "horarios"
         } else {
-          setError(data.mensaje || 'Error al obtener los horarios');
+          setError(data.mensaje || "Error al obtener los horarios");
         }
       } catch (err) {
-        setError('Hubo un error en la conexión');
+        setError("Hubo un error en la conexión");
       } finally {
         setLoading(false);
       }
@@ -72,22 +94,23 @@ const HorariosAuxiliar = () => {
         hora_salida: horaSalida,
       });
 
-      if (response.status === 200) {
-        const newHorario = response.data;
-        if (newHorario.Dia_semana && newHorario.Hora_entrada && newHorario.Hora_salida) {
-          setHorariosData((prevData: any) => ({
-            ...prevData,
-            horarios: [...prevData.horarios, newHorario],
-          }));
-          setOpen(false); // Cerrar el modal
-        } else {
-          setError('El horario agregado tiene datos incompletos');
-        }
+      if (response.status == 200) {
+        handleCloseModal(); // Cerrar el modal después de agregar el horario
+        Swal.fire({
+          icon: "success",
+          title: "Horario agregado",
+          text: response.mensaje,
+          timer: 2000,
+          didClose: () => {
+            navigate(0); // Recargar la página después de agregar el horario
+          }
+        });
       } else {
-        setError(response.mensaje || 'Error al agregar horario');
+        setError(response.mensaje || "Error al agregar horario");
       }
     } catch (err) {
-      setError('Error al agregar el horario');
+      console.error("Error al agregar horario:", err); // Log del error
+      setError("Error al agregar el horario");
     } finally {
       setAdding(false);
     }
@@ -100,13 +123,15 @@ const HorariosAuxiliar = () => {
       if (response.status === 200) {
         setHorariosData((prevData: any) => ({
           ...prevData,
-          horarios: prevData.horarios.filter((horario: any) => horario.Id_horario !== id),
+          horarios: prevData.horarios.filter(
+            (horario: any) => horario.Id_horario !== id
+          ),
         }));
       } else {
-        setError(response.mensaje || 'Error al eliminar el horario');
+        setError(response.mensaje || "Error al eliminar el horario");
       }
     } catch (err) {
-      setError('Error al eliminar el horario');
+      setError("Error al eliminar el horario");
     }
   };
 
@@ -131,7 +156,7 @@ const HorariosAuxiliar = () => {
           <Typography variant="h6" component="h2">
             Agregar Nuevo Horario
           </Typography>
-          
+
           {/* Selección del día de la semana */}
           <FormControl fullWidth margin="normal">
             <InputLabel>Día de la Semana</InputLabel>
@@ -162,7 +187,7 @@ const HorariosAuxiliar = () => {
             }}
             helperText="Formato 24 horas (Ej: 08:00, 17:30)"
           />
-          
+
           {/* Campo de Hora de Salida */}
           <TextField
             label="Hora de Salida (24 horas)"
@@ -175,7 +200,7 @@ const HorariosAuxiliar = () => {
             }}
             helperText="Formato 24 horas (Ej: 08:00, 17:30)"
           />
-          
+
           <Button
             variant="contained"
             color="primary"
@@ -183,7 +208,7 @@ const HorariosAuxiliar = () => {
             disabled={adding}
             sx={{ marginTop: 2 }}
           >
-            {adding ? <CircularProgress size={24} /> : 'Agregar'}
+            {adding ? <CircularProgress size={24} /> : "Agregar"}
           </Button>
         </Box>
       </Modal>
@@ -200,7 +225,8 @@ const HorariosAuxiliar = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.isArray(horariosData.horarios) && horariosData.horarios.length > 0 ? (
+            {Array.isArray(horariosData.horarios) &&
+            horariosData.horarios.length > 0 ? (
               horariosData.horarios.map((horario: any, index: number) => (
                 <TableRow key={index}>
                   <TableCell>{horario.Dia_semana}</TableCell>
