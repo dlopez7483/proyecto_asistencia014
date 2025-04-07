@@ -8,6 +8,7 @@ import AdminHorarios from "@pages/usuarios/administrador/horarios";
 import Reportes from "@pages/usuarios/administrador/reportes";
 import Perfil from "@pages/usuarios/administrador/perfil";
 import ReporteIndividual from "@pages/usuarios/tutor/reportes/ReporteIndividual";
+import VerHorario from "@pages/usuarios/tutor/horario/verhorario";
 //import AuthVerification from "@common/components/AuthVerification";
 
 const router = createBrowserRouter([
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
       },
       {
         path: "horarios",
-        element: <div>Horarios</div>,
+        element: <VerHorario />,
       },
       {
         path: "reportes",
