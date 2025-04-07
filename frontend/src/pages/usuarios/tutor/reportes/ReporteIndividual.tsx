@@ -13,26 +13,26 @@ import {
 import { getReporteHorasIndividual } from "./services/reporteService";
 
 interface Marcacion {
-  fecha: string;
-  nombre: string;
-  apellido: string;
-  hora_entrada: string;
-  hora_salida: string;
-  horario: string;
+  Fecha: string;
+  Nombre: string;
+  Apellido: string;
+  Hora_entrada: string;
+  Hora_salida: string;
+  Id_horario: number;
 }
 
 interface HorasPorFecha {
-  fecha: string;
-  nombre: string;
-  apellido: string;
-  horas_completadas: number;
-  total_acumulado: number;
+  Fecha: string;
+  Nombre: string;
+  Apellido: string;
+  Horas_completadas: string;
+  Total_horas_acumuladas: string;
 }
 
 interface TotalAcumulado {
-  nombre: string;
-  apellido: string;
-  horas_acumuladas: number;
+  Nombre: string;
+  Apellido: string;
+  Horas_acumuladas: string;
 }
 
 const ReporteIndividual: React.FC = () => {
@@ -48,7 +48,9 @@ const ReporteIndividual: React.FC = () => {
         setMarcaciones(response.marcaciones || []);
         console.log(response.marcaciones);
         setHorasPorFecha(response.horas_por_fecha || []);
-        setTotalAcumulado(response.total_acumulado || []);
+        console.log(response.horas_por_fecha);
+        setTotalAcumulado(response.horas_acumuladas || []);
+        console.log(response.horas_acumuladas);
       } else {
         console.error("Error al obtener el reporte:", response);
       }
@@ -56,6 +58,16 @@ const ReporteIndividual: React.FC = () => {
 
     fetchReporte();
   }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  };
+
+  const formatTime = (timeString: string) => {
+    const time = new Date(timeString);
+    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <Box p={3}>
@@ -77,18 +89,16 @@ const ReporteIndividual: React.FC = () => {
                 <TableCell>Apellido</TableCell>
                 <TableCell>Hora Entrada</TableCell>
                 <TableCell>Hora Salida</TableCell>
-                <TableCell>Horario</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {marcaciones.map((m, index) => (
                 <TableRow key={index}>
-                  <TableCell>{m.fecha}</TableCell>
-                  <TableCell>{m.nombre}</TableCell>
-                  <TableCell>{m.apellido}</TableCell>
-                  <TableCell>{m.hora_entrada}</TableCell>
-                  <TableCell>{m.hora_salida}</TableCell>
-                  <TableCell>{m.horario}</TableCell>
+                  <TableCell>{formatDate(m.Fecha)}</TableCell>
+                  <TableCell>{m.Nombre}</TableCell>
+                  <TableCell>{m.Apellido}</TableCell>
+                  <TableCell>{formatTime(m.Hora_entrada)}</TableCell>
+                  <TableCell>{formatTime(m.Hora_salida)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -115,11 +125,11 @@ const ReporteIndividual: React.FC = () => {
             <TableBody>
               {horasPorFecha.map((h, index) => (
                 <TableRow key={index}>
-                  <TableCell>{h.fecha}</TableCell>
-                  <TableCell>{h.nombre}</TableCell>
-                  <TableCell>{h.apellido}</TableCell>
-                  <TableCell>{h.horas_completadas}</TableCell>
-                  <TableCell>{h.total_acumulado}</TableCell>
+                  <TableCell>{formatDate(h.Fecha)}</TableCell>
+                  <TableCell>{h.Nombre}</TableCell>
+                  <TableCell>{h.Apellido}</TableCell>
+                  <TableCell>{h.Horas_completadas}</TableCell>
+                  <TableCell>{h.Total_horas_acumuladas}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -144,9 +154,9 @@ const ReporteIndividual: React.FC = () => {
             <TableBody>
               {totalAcumulado.map((t, index) => (
                 <TableRow key={index}>
-                  <TableCell>{t.nombre}</TableCell>
-                  <TableCell>{t.apellido}</TableCell>
-                  <TableCell>{t.horas_acumuladas}</TableCell>
+                  <TableCell>{t.Nombre}</TableCell>
+                  <TableCell>{t.Apellido}</TableCell>
+                  <TableCell>{t.Horas_acumuladas}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
