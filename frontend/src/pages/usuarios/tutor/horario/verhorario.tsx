@@ -62,10 +62,18 @@ const HorariosAuxiliar = () => {
         if (data.status === 200 && Array.isArray(data.horarios)) {
           setHorariosData(data); // Solo asignamos si hay la propiedad "horarios"
         } else {
-          setError(data.mensaje || "Error al obtener los horarios");
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: data.mensaje || "Error al obtener los horarios",
+          });
         }
       } catch (err) {
-        setError("Hubo un error en la conexión");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo obtener los horarios. Por favor, intenta nuevamente.",
+        });
       } finally {
         setLoading(false);
       }
@@ -106,11 +114,19 @@ const HorariosAuxiliar = () => {
           }
         });
       } else {
-        setError(response.mensaje || "Error al agregar horario");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response.mensaje || "Error al agregar horario",
+        });
       }
     } catch (err) {
       console.error("Error al agregar horario:", err); // Log del error
-      setError("Error al agregar el horario");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo agregar el horario. Por favor, intenta nuevamente.",
+      });
     } finally {
       setAdding(false);
     }
@@ -128,10 +144,19 @@ const HorariosAuxiliar = () => {
           ),
         }));
       } else {
-        setError(response.mensaje || "Error al eliminar el horario");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response.mensaje || "Error al eliminar el horario",
+        });
       }
     } catch (err) {
-      setError("Error al eliminar el horario");
+      console.error("Error al eliminar horario:", err); // Log del error
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo eliminar el horario. Por favor, intenta nuevamente.",
+      });
     }
   };
 
