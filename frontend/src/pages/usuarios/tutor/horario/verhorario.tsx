@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getReporteHorasIndividual } from './services/serviceHorario';
 import { postHorarioAuxiliar } from './services/serviceAgregarHorario'; 
+import { deleteSchedule } from './services/deletehorario'; // Importa el servicio de eliminación
+import { updateHorario } from './services/updateHorario'; // Importa el servicio de actualización
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography, Button, Modal, TextField, Box, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete'; // Ícono de eliminar
 
 // Estilo para el modal
 const modalStyle = {
@@ -70,13 +73,11 @@ const HorariosAuxiliar = () => {
       });
 
       if (response.status === 200) {
-        // Asegúrate de que la respuesta tiene la estructura correcta
         const newHorario = response.data;
         if (newHorario.Dia_semana && newHorario.Hora_entrada && newHorario.Hora_salida) {
-          // Actualiza el estado de horarios con el nuevo horario
           setHorariosData((prevData: any) => ({
             ...prevData,
-            horarios: [...prevData.horarios, newHorario], // Agregar el nuevo horario a los existentes
+            horarios: [...prevData.horarios, newHorario],
           }));
           setOpen(false); // Cerrar el modal
         } else {
@@ -89,6 +90,23 @@ const HorariosAuxiliar = () => {
       setError('Error al agregar el horario');
     } finally {
       setAdding(false);
+    }
+  };
+
+  // Función para eliminar horario
+  const handleDeleteHorario = async (id: number) => {
+    try {
+      const response = await deleteSchedule(id);
+      if (response.status === 200) {
+        setHorariosData((prevData: any) => ({
+          ...prevData,
+          horarios: prevData.horarios.filter((horario: any) => horario.Id_horario !== id),
+        }));
+      } else {
+        setError(response.mensaje || 'Error al eliminar el horario');
+      }
+    } catch (err) {
+      setError('Error al eliminar el horario');
     }
   };
 
@@ -178,30 +196,31 @@ const HorariosAuxiliar = () => {
               <TableCell>Dia de la Semana</TableCell>
               <TableCell>Hora de Entrada</TableCell>
               <TableCell>Hora de Salida</TableCell>
+              <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* Verificación de si los horarios están disponibles */}
             {Array.isArray(horariosData.horarios) && horariosData.horarios.length > 0 ? (
-              horariosData.horarios.map((horario: any, index: number) => {
-                if (!horario.Dia_semana || !horario.Hora_entrada || !horario.Hora_salida) {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell colSpan={3}>Datos incompletos para este horario</TableCell>
-                    </TableRow>
-                  );
-                }
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{horario.Dia_semana}</TableCell>
-                    <TableCell>{horario.Hora_entrada}</TableCell>
-                    <TableCell>{horario.Hora_salida}</TableCell>
-                  </TableRow>
-                );
-              })
+              horariosData.horarios.map((horario: any, index: number) => (
+                <TableRow key={index}>
+                  <TableCell>{horario.Dia_semana}</TableCell>
+                  <TableCell>{horario.Hora_entrada}</TableCell>
+                  <TableCell>{horario.Hora_salida}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDeleteHorario(horario.Id_horario)}
+                      startIcon={<DeleteIcon />}
+                    >
+                      Eliminar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3}>No se encontraron horarios</TableCell>
+                <TableCell colSpan={4}>No se encontraron horarios</TableCell>
               </TableRow>
             )}
           </TableBody>
