@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { login, logout } = require('../controllers/authController');
-const { marcar_entrada } = require('../controllers/auxiliar/marcar_entrada');
-const { marcar_salida } = require('../controllers/auxiliar/marcar_salida');
+const { marcar_entrada } = require('../controllers/auxiliar/marcar_entrada_real');
+const { marcar_salida } = require('../controllers/auxiliar/marcar_salida_real');
 const  configuracionController  = require('../controllers/status_schedules');
 
 
