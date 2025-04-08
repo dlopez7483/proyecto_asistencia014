@@ -9,3 +9,7 @@ body {
     height: 100vh;
     margin: 0;
 }
+
+.swal2-container {
+    z-index: 9999;
+}

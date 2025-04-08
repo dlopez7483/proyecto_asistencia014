@@ -7,6 +7,8 @@ import AdminTutores from "@pages/usuarios/administrador/tutores";
 import AdminHorarios from "@pages/usuarios/administrador/horarios";
 import Reportes from "@pages/usuarios/administrador/reportes";
 import Perfil from "@pages/usuarios/administrador/perfil";
+import ReporteIndividual from "@pages/usuarios/tutor/reportes/ReporteIndividual";
+import VerHorario from "@pages/usuarios/tutor/horario/verhorario";
 //import AuthVerification from "@common/components/AuthVerification";
 
 const router = createBrowserRouter([
@@ -26,7 +28,6 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Navigate to="tutores" />,
-        
       },
       {
         path: "tutores",
@@ -43,7 +44,7 @@ const router = createBrowserRouter([
       {
         path: "perfil",
         element: <Perfil />,
-      }
+      },
     ],
   },
   {
@@ -51,20 +52,12 @@ const router = createBrowserRouter([
     element: <Tutor />,
     children: [
       {
-        path: "",
-        element: <div>Dashboard</div>,
-      },
-      {
-        path: "tutores",
-        element: <div>Tutor</div>,
-      },
-      {
         path: "horarios",
-        element: <div>Horarios</div>,
+        element: <VerHorario />,
       },
       {
         path: "reportes",
-        element: <div>Reportes</div>,
+        element: <ReporteIndividual />,
       },
     ],
   },
