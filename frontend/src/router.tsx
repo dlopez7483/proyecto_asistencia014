@@ -52,14 +52,6 @@ const router = createBrowserRouter([
     element: <Tutor />,
     children: [
       {
-        path: "",
-        element: <div>Dashboard</div>,
-      },
-      {
-        path: "tutores",
-        element: <div>Tutor</div>,
-      },
-      {
         path: "horarios",
         element: <VerHorario />,
       },

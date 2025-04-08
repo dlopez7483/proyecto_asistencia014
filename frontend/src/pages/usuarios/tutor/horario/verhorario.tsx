@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getReporteHorasIndividual } from "./services/serviceHorario";
 import { postHorarioAuxiliar } from "./services/serviceAgregarHorario";
 import { deleteSchedule } from "./services/deletehorario"; // Importa el servicio de eliminación
-import { updateHorario } from "./services/updateHorario"; // Importa el servicio de actualización
 import {
   Table,
   TableBody,
