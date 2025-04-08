@@ -25,7 +25,6 @@ import { formatDate } from "../utils/formatDate";
       "Apellido",
       "Fecha",
       "Horas Completadas",
-      "Total Acumuladas",
     ];
   
     return (
@@ -61,9 +60,6 @@ import { formatDate } from "../utils/formatDate";
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     {row.Horas_completadas}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
-                    {row.Total_horas_acumuladas}
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
