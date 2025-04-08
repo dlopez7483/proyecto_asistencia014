@@ -52,6 +52,10 @@ const router = createBrowserRouter([
     element: <Tutor />,
     children: [
       {
+        path: "",
+        element: <Navigate to="horarios" />,
+      },
+      {
         path: "horarios",
         element: <VerHorario />,
       },
