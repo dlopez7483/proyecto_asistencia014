@@ -9,6 +9,8 @@ import Reportes from "@pages/usuarios/administrador/reportes";
 import Perfil from "@pages/usuarios/administrador/perfil";
 import ReporteIndividual from "@pages/usuarios/tutor/reportes/ReporteIndividual";
 import VerHorario from "@pages/usuarios/tutor/horario/verhorario";
+import TutorVerification from "@common/components/TutorVerification";
+import AdminVerification from "@common/components/AdminVerification";
 //import AuthVerification from "@common/components/AuthVerification";
 
 const router = createBrowserRouter([
@@ -23,7 +25,11 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard-admin",
-    element: <Administrador />,
+    element: (
+      <AdminVerification>
+        <Administrador />
+      </AdminVerification>
+    ),
     children: [
       {
         path: "",
@@ -49,7 +55,11 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard-tutor",
-    element: <Tutor />,
+    element: (
+      <TutorVerification>
+        <Tutor />
+      </TutorVerification>
+    ),
     children: [
       {
         path: "",
