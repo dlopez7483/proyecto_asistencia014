@@ -40,39 +40,41 @@ ORDER BY e.Fecha, a.Nombre, a.Apellido;
         `;
 
         const query_horas_acumuladas = `
-        WITH horas_marcacion AS (
-            SELECT
-                a.Id_auxiliar,
-                a.Nombre,
-                a.Apellido,
-                a.carne,
-                DATE_FORMAT(e.Fecha, '%Y-%m-%d') AS Fecha,
-                e.Hora_marcacion AS Hora_entrada,
-                s.Hora_marcacion AS Hora_salida
-            FROM Auxiliar a
-            INNER JOIN Asistencia_Entrada e ON a.Id_auxiliar = e.Id_auxiliar
-            INNER JOIN Asistencia_Salida s
-                ON a.Id_auxiliar = s.Id_auxiliar
-                AND e.Fecha = s.Fecha
-                AND e.Id_horario = s.Id_horario
-            WHERE a.Carne = ?
-        ),
-        horas_completadas AS (
-            SELECT
-                hm.Id_auxiliar,
-                hm.Nombre,
-                hm.Apellido,
-                SUM(TIME_TO_SEC(TIMEDIFF(hm.Hora_salida, hm.Hora_entrada))) AS Total_horas_segundos
-            FROM horas_marcacion hm
-            GROUP BY hm.Id_auxiliar, hm.Nombre, hm.Apellido
-        )
-        SELECT
-            hc.Id_auxiliar,
-            hc.Nombre,
-            hc.Apellido,
-            TIME_FORMAT(SEC_TO_TIME(hc.Total_horas_segundos), '%H:%i:%s') AS Horas_acumuladas
-        FROM horas_completadas hc
-        ORDER BY hc.Total_horas_segundos DESC;
+WITH asistencias_completas AS (
+    SELECT
+        a.Id_auxiliar,
+        a.Nombre,
+        a.Apellido,
+        h.Id_horario,
+        h.Hora_entrada,
+        h.Hora_salida,
+        TIMESTAMPDIFF(SECOND, h.Hora_entrada, h.Hora_salida) AS duracion_segundos
+    FROM Auxiliar a
+    INNER JOIN Asistencia_Entrada e ON a.Id_auxiliar = e.Id_auxiliar
+    INNER JOIN Asistencia_Salida s
+        ON a.Id_auxiliar = s.Id_auxiliar
+        AND e.Fecha = s.Fecha
+        AND e.Id_horario = s.Id_horario
+    INNER JOIN Horario h ON h.Id_horario = e.Id_horario
+    WHERE a.Carne = ?
+),
+horas_completadas AS (
+    SELECT
+        ac.Id_auxiliar,
+        ac.Nombre,
+        ac.Apellido,
+        SUM(ac.duracion_segundos) AS Total_horas_segundos
+    FROM asistencias_completas ac
+    GROUP BY ac.Id_auxiliar, ac.Nombre, ac.Apellido
+)
+SELECT
+    hc.Id_auxiliar,
+    hc.Nombre,
+    hc.Apellido,
+    TIME_FORMAT(SEC_TO_TIME(hc.Total_horas_segundos), '%H:%i:%s') AS Horas_acumuladas
+FROM horas_completadas hc
+ORDER BY hc.Total_horas_segundos DESC;
+
         `;
 
         const query_horas_diarias = `
