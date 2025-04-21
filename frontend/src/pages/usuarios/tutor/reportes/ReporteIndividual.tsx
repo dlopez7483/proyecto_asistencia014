@@ -119,7 +119,6 @@ const ReporteIndividual: React.FC = () => {
                 <TableCell>Nombre</TableCell>
                 <TableCell>Apellido</TableCell>
                 <TableCell>Horas Completadas</TableCell>
-                <TableCell>Total Acumulado</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -129,7 +128,6 @@ const ReporteIndividual: React.FC = () => {
                   <TableCell>{h.Nombre}</TableCell>
                   <TableCell>{h.Apellido}</TableCell>
                   <TableCell>{h.Horas_completadas}</TableCell>
-                  <TableCell>{h.Total_horas_acumuladas}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

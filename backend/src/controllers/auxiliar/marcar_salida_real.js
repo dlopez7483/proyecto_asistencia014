@@ -3,22 +3,35 @@ const config = require('../../config/config');
 
 exports.marcar_salida = async (req, res) => {
     const { rfid } = req.body;
-
+    
     try {
         const pool = mysql.createPool(config.db);
         const connection = await pool.getConnection();
 
         const fecha = new Date();
+        
+        // Obtener fecha y hora en zona horaria de Guatemala
+        const fechaGuatemala = new Date(
+            fecha.toLocaleString('en-US', { timeZone: 'America/Guatemala' })
+        );
+
+        // Día de la semana
         const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        const diaSemana = diasSemana[fecha.getDay()];
+        const diaSemana = diasSemana[fechaGuatemala.getDay()];
 
-        // Hora constante para pruebas (puedes cambiarla por la real)
-        const horaPrueba = "16:10:00"; 
-        const horaActual = fecha.toTimeString().split(' ')[0]; // Obtener la hora actual
+        // Fecha local en formato YYYY-MM-DD (no UTC)
+        const fechaHoy = fechaGuatemala.toLocaleDateString('sv-SE'); // "2025-04-11"
 
-        console.log(`Hoy es ${diaSemana}, la hora actual de prueba es ${horaPrueba}`);
-        console.log(`La hora actual es ${horaActual}`);
+        // Hora local en formato HH:mm:ss
+        const horaActual = fechaGuatemala.toLocaleTimeString('es-GT', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
 
+        console.log(`Hoy es ${diaSemana}, la fecha local es ${fechaHoy}, la hora local es ${horaActual}`);
+        
         // Obtener los horarios del auxiliar para ese día
         const [rows] = await connection.query("CALL ObtenerHorariosAuxiliarPorRFID(?, ?)", [rfid, diaSemana]);
         if (rows[0].length === 0) {
@@ -27,16 +40,32 @@ exports.marcar_salida = async (req, res) => {
         }
 
         const idAuxiliar = rows[0][0].Id_auxiliar;
-        const fechaHoy = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-        console.log(rows[0]);
 
-        let salidaMarcada = false; // Flag para verificar si ya se marcó la salida
-
+        // Flag para verificar si ya se marcó la entrada
+        let salidaMarcada = false;
         for (let horario of rows[0]) {
+            const horaEntrada = horario.Hora_entrada;
             const horaSalida = horario.Hora_salida;
             const idHorario = horario.Id_horario;
+        
+            let entradaMarcada = false; // Reiniciar el flag para cada horario
+             // Flag para verificar si ya se marcó la salida
+            // Verificar si ya marcó asistencia en ese horario
+            console.log(idAuxiliar);
+            console.log(idHorario);
+            console.log(fechaHoy);
+            const [asistencia] = await connection.query(
+                "SELECT * FROM Asistencia_Entrada WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
+                [idAuxiliar, idHorario, fechaHoy]
+            );
+            console.log("AAAAA");
+            console.log(asistencia);
+            if (asistencia.length > 0) {
+                console.log(`Ya marcó entrada en el horario de ${horaEntrada}`);
+                console.log(asistencia.length);
+                entradaMarcada = true; // Marcamos que ya se registró la entrada
+            }
 
-            // Verificar si ya marcó salida en ese horario
             const [asistenciaSalida] = await connection.query(
                 "SELECT * FROM Asistencia_Salida WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
                 [idAuxiliar, idHorario, fechaHoy]
@@ -47,56 +76,31 @@ exports.marcar_salida = async (req, res) => {
                 continue; // Saltar al siguiente horario si ya marcó la salida
             }
 
-            // Verificar si marcó entrada antes de permitir la salida
-            const [asistenciaEntrada] = await connection.query(
-                "SELECT * FROM Asistencia_Entrada WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
-                [idAuxiliar, idHorario, fechaHoy]
-            );
+            // Calcular rango de marcación (20 minutos antes o después)
+            const horasalidaDate = new Date(`${fechaHoy}T${horaSalida}`);
+            const rangoInicio = new Date(horasalidaDate.getTime() - 20 * 60000); // -20 min
+            const rangoFin = new Date(horasalidaDate.getTime() + 20 * 60000); // +20 min
+            const horaActualDate = new Date(`${fechaHoy}T${horaActual}`); // Usamos la hora local
 
-            if (asistenciaEntrada.length === 0) {
-                console.log(`No ha marcado entrada en el horario de ${horaSalida}, no puede marcar salida.`);
-                continue; // No permitir salida si no hay entrada registrada
-            }
+            if (horaActualDate >= rangoInicio && horaActualDate <= rangoFin && entradaMarcada) {
+                // Crear el valor de Hora_marcacion como un DATETIME
+                const horaMarcacion = `${fechaHoy}T${horaActual}`; // Combina la fecha con la hora para el DATETIME
 
-            // Calcular el rango de marcación para la entrada (20 minutos antes o después)
-            const horaEntradaDate = new Date(`${fechaHoy}T${horario.Hora_entrada}`); // Hora programada de entrada
-            const rangoEntradaInicio = new Date(horaEntradaDate.getTime() - 20 * 60000); // -20 min de margen
-            const rangoEntradaFin = new Date(horaEntradaDate.getTime() + 20 * 60000); // +20 min de margen
-            const horaEntradaActualDate = new Date(`${fechaHoy}T${horaActual}`); // Hora actual para verificar entrada
-
-            // Verificar si la hora de entrada está dentro del rango
-            if (horaEntradaActualDate >= rangoEntradaInicio && horaEntradaActualDate <= rangoEntradaFin) {
-                let horaSalidaAjustada;
-
-                // Si entró antes de la hora programada, ajustamos la hora de salida hacia adelante
-                if (horaEntradaActualDate < horaEntradaDate) {
-                    const diferenciaMinutos = (horaEntradaDate - horaEntradaActualDate) / 60000; // Diferencia en minutos
-                    horaSalidaAjustada = new Date(horaSalidaDate); // Hora programada de salida
-                    horaSalidaAjustada.setMinutes(horaSalidaAjustada.getMinutes() + diferenciaMinutos); // Ajustamos según la diferencia de entrada
-                } 
-                // Si entró después de la hora programada, ajustamos la hora de salida hacia atrás
-                else if (horaEntradaActualDate > horaEntradaDate) {
-                    const diferenciaMinutos = (horaEntradaActualDate - horaEntradaDate) / 60000; // Diferencia en minutos
-                    horaSalidaAjustada = new Date(horaSalidaDate); // Hora programada de salida
-                    horaSalidaAjustada.setMinutes(horaSalidaAjustada.getMinutes() - diferenciaMinutos); // Ajustamos según la diferencia de entrada
-                } 
-                else {
-                    horaSalidaAjustada = new Date(horaSalidaDate); // Si entró a la hora exacta, no hay ajuste
-                }
-
-                // Ahora tenemos `horaSalidaAjustada`, que es la hora de salida ajustada según la entrada
-                const horaMarcacion = `${fechaHoy}T${horaActual}`; // Combina la fecha con la hora actual para el DATETIME
-
-                // Insertar asistencia de salida con la hora ajustada
+                // Insertar asistencia
                 await connection.query(
                     "INSERT INTO Asistencia_Salida (Id_auxiliar, Id_horario, Fecha, Hora_marcacion) VALUES (?, ?, ?, ?)",
-                    [idAuxiliar, idHorario, fechaHoy, horaMarcacion]
+                    [idAuxiliar, idHorario, fechaHoy, horaMarcacion] // Ahora estamos usando un DATETIME
                 );
 
-                console.log(`Salida marcada para el auxiliar ${idAuxiliar} en horario ${horaSalidaAjustada}`);
+                console.log(`Salida marcada para el auxiliar ${idAuxiliar} en horario ${horaSalida}`);
                 salidaMarcada = true;
                 break; // Si ya se marcó la salida, salimos del bucle
             }
+                else if (horaActualDate < rangoInicio) {
+                    console.log(`No se puede marcar salida antes de las ${rangoInicio.toLocaleTimeString()}`);
+                } else if (horaActualDate > rangoFin) {
+                    console.log(`No se puede marcar salida después de las ${rangoFin.toLocaleTimeString()}`);
+                }
         }
 
         connection.release();
@@ -104,7 +108,7 @@ exports.marcar_salida = async (req, res) => {
         if (salidaMarcada) {
             res.status(200).json({ mensaje: "Salida marcada exitosamente" });
         } else {
-            res.status(400).json({ mensaje: "No se puede marcar salida fuera del rango permitido o no ha marcado entrada" });
+            res.status(400).json({ mensaje: "No se puede marcar salida fuera del rango permitido" });
         }
 
     } catch (error) {

@@ -8,17 +8,19 @@ exports.marcar_entrada = async (req, res) => {
         const pool = mysql.createPool(config.db);
         const connection = await pool.getConnection();
 
+        // Establecer la zona horaria de Guatemala (UTC-6)
         const fecha = new Date();
-        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
-        const diaSemana = diasSemana[fecha.getDay()];
-        
-        // Hora constante para pruebas (aquí estamos utilizando 08:00:00)
-        const horaPrueba = "08:10:00"; 
-        const horaActual = fecha.toTimeString().split(' ')[0]; // Obtener la hora actual
+        const fechaLocal = new Date(fecha.toLocaleString('en-US', { timeZone: 'America/Guatemala' }));
 
-        console.log(`Hoy es ${diaSemana}, la hora actual de prueba es ${horaPrueba}`);
-        console.log(`La hora actual es ${horaActual}`);
+        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const diaSemana = diasSemana[fechaLocal.getDay()];
         
+        // Obtener la hora actual en formato HH:mm:ss en zona horaria de Guatemala
+        const horaActual = fechaLocal.toLocaleTimeString('es-GT', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        console.log(`Hoy es ${diaSemana}, la hora actual en Guatemala es ${horaActual}`);
+        console.log(fechaLocal);
+
         // Obtener los horarios del auxiliar para ese día
         const [rows] = await connection.query("CALL ObtenerHorariosAuxiliarPorRFID(?, ?)", [rfid, diaSemana]);
         if (rows[0].length === 0) {
@@ -27,7 +29,7 @@ exports.marcar_entrada = async (req, res) => {
         }
 
         const idAuxiliar = rows[0][0].Id_auxiliar;
-        const fechaHoy = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        const fechaHoy = fechaLocal.toISOString().split('T')[0]; // Formato YYYY-MM-DD
         console.log(rows[0]);
 
         let entradaMarcada = false; // Flag para verificar si ya se marcó la entrada
@@ -44,7 +46,6 @@ exports.marcar_entrada = async (req, res) => {
 
             if (asistencia.length > 0) {
                 console.log(`Ya marcó entrada en el horario de ${horaEntrada}`);
-                console.log(asistencia.length);
                 continue; // Saltar al siguiente horario si ya marcó la entrada
             }
 
@@ -83,4 +84,3 @@ exports.marcar_entrada = async (req, res) => {
         res.status(500).json({ mensaje: "Error al conectar a la base de datos" });
     }
 };
-
