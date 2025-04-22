@@ -15,7 +15,7 @@ import {
   DialogActions,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import axios from "axios";
 
@@ -34,7 +34,7 @@ export default function FormLogin() {
   const [open, setOpen] = useState(false);
   const [rfid, setRfid] = useState("");
 
-  const handleMarcarAsistencia = async (tipo) => {
+  const handleMarcarAsistencia = async (tipo: string) => {
     if (!rfid) return;
 
     try {
@@ -45,7 +45,7 @@ export default function FormLogin() {
 
       const response = await axios.post(endpoint, { rfid });
       alert(response.data.mensaje || "Asistencia marcada correctamente");
-    } catch (error) {
+    } catch (error:any) {
       alert(error.response?.data?.mensaje || "Error al marcar asistencia");
     }
 
@@ -107,7 +107,7 @@ export default function FormLogin() {
             label="Código RFID"
             fullWidth
             value={rfid}
-            onChange={(e) => setRfid(e.target.value)}
+            onChange={(e: { target: { value: SetStateAction<string>; }; }) => setRfid(e.target.value)}
             sx={{ marginBottom: 2, marginTop: 1 }}
           />
           <Typography variant="body2" sx={{ marginBottom: 1 }}>
