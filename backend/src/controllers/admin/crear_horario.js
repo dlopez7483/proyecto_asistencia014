@@ -24,7 +24,7 @@ exports.crear_horario = async (req, res) => {
             const id_horario = verificarHorario[0].Id_horario;
 
             const agregarHorarioQuery = `
-                INSERT INTO Horario_Auxiliar (Id_horario, Id_auxiliar) VALUES (?, ?);
+                INSERT INTO Auxiliar_Horario(Id_horario, Id_auxiliar) VALUES (?, ?);
             `;
             await connection.execute(agregarHorarioQuery, [id_horario, Id_auxiliar[0].Id_auxiliar]);
             connection.destroy(); // Cerrar conexión
@@ -37,7 +37,7 @@ exports.crear_horario = async (req, res) => {
          const [resultado] = await connection.execute(agregarHorarioQuery, [dia_semana, hora_entrada, hora_salida]);
          const id_horario = resultado.insertId; // Obtener el ID del nuevo horario
          const agregarHorarioAuxQuery = `
-                INSERT INTO Horario_Auxiliar (Id_horario, Id_auxiliar) VALUES (?, ?);
+                INSERT INTO Auxiliar_Horario (Id_horario, Id_auxiliar) VALUES (?, ?);
             `;
          await connection.execute(agregarHorarioAuxQuery, [id_horario, Id_auxiliar[0].Id_auxiliar]);
 

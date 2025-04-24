@@ -1,4 +1,4 @@
-import { Button, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useModal } from "@common/hooks";
 import {
@@ -8,11 +8,14 @@ import {
 } from "./components";
 import { useEffect } from "react";
 import { getUsuarios } from "./services";
-import { useUsersActions } from "@common/store/hooks";
+import { useAppSelector, useUsersActions } from "@common/store/hooks";
+import ModalRegistrarHorario from "./components/ModalRegistrarHorario";
 
 export default function AdminTutores() {
   const modal = useModal(false);
+  const modalRegistrar = useModal(false, {Dia_semana: "Lunes", Hora_entrada: "", Hora_salida: ""});
   const { setTutores } = useUsersActions();
+  const { currentTutor } = useAppSelector((state) => state.tutores);
 
   useEffect(() => {
     getUsuarios().then((res) => {
@@ -39,12 +42,25 @@ export default function AdminTutores() {
         <TablaTutores />
       </Container>
       <Container sx={{ margin: "10px" }}>
-        <Typography variant="h5" component="h2" sx={{ margin: "10px" }}>
-          Horarios por Tutor
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+          <Typography variant="h5" component="h2">
+            Horarios por Tutor
+          </Typography>
+          {!currentTutor.Carne ? null : (
+            <Button
+              variant="contained"
+              color="success"
+              startIcon={<AddIcon />}
+              onClick={modalRegistrar.handleOpen}
+            >
+              Registrar Horario
+            </Button>
+          )}
+        </Box>
         <TablaHorarioTutor />
       </Container>
       <ModalRegistrarForm modal={modal} />
+      <ModalRegistrarHorario modal={modalRegistrar} />
     </>
   );
 }
