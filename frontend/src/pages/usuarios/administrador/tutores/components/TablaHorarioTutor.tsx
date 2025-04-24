@@ -23,6 +23,7 @@ import { useAppSelector } from "@common/store/hooks";
 import { deleteSchedule } from "../services";
 import ModalUpdateHora from "./ModalUpdateHora";
 import { useModal } from "@common/hooks";
+import Swal from "sweetalert2";
 
 const columns: Array<string> = ["Día", "Hora de Entrada", "Hora de Salida"];
 
@@ -49,14 +50,26 @@ export default function TablaHorarioTutor() {
   }, [currentTutor]);
 
   const handleDelete = (id: number) => {
-    deleteSchedule(id).then((res) => {
-      if (res.status === 200) {
-        setUserData((prevState) => ({
-          ...prevState,
-          rows: prevState.rows.filter((row) => row.Id_horario !== id),
-        }));
-      } else {
-        console.log("Error deleting schedule:", res);
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "No podrás revertir esto",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteSchedule(id).then((res) => {
+          if (res.status === 200) {
+            setUserData((prevState) => ({
+              ...prevState,
+              rows: prevState.rows.filter((row) => row.Id_horario !== id),
+            }));
+          } else {
+            console.log("Error deleting schedule:", res);
+          }
+        });
       }
     });
   };

@@ -86,7 +86,7 @@ export default function ModalRegistrarForm({ modal }: { modal: any }) {
             component="h2"
             sx={{ mb: 2 }}
           >
-            Registrar Usuario
+            Registrar Tutor
           </Typography>
           <Box
             component="form"
