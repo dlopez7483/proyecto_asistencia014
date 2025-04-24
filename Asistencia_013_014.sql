@@ -18,6 +18,8 @@ CREATE TABLE Auxiliar(
     Id_rol INT NOT NULL,
     FOREIGN KEY (Id_rol) REFERENCES Rol(Id_rol) -- Admin: 1 Tutor 2
 );
+alter table Auxiliar add unique(Carne);
+alter table Auxiliar add unique(Codigo_RFID);
 
 CREATE TABLE Horario(
     Id_horario INT AUTO_INCREMENT PRIMARY KEY,

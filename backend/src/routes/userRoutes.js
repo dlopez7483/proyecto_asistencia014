@@ -47,6 +47,7 @@ router.post('/aux/agregarHorario', auxiliarRequired, agregarHorarioPracticante);
 router.delete('/aux/eliminarHorario/:Id_horario', delete_horario);
 router.get('/aux/horarios_auxiliar',auxiliarRequired, obtenerHorariosAuxiliarPersonal);
 router.get('/aux/reporte_horas_individual',auxiliarRequired,reporte_horas_individual);
+router.put('/editar_perfil/:id',auxiliarRequired, edit_aux);
 
 
 module.exports = router;

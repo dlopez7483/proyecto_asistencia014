@@ -52,7 +52,7 @@ export default function ModalRegistrarForm({ modal }: { modal: any }) {
           text: "Se ha registrado el tutor exitosamente",
         });
         getUsuarios().then((res) => {
-          if (res.status === 200) {
+          if (res.status === 200 ) {
             setTutores(res.auxiliares);
           } else {
             setTutores([]);
@@ -96,15 +96,14 @@ export default function ModalRegistrarForm({ modal }: { modal: any }) {
           >
             <div style={{ textAlign: "center" }}>
               <TextField required {...carnet.props} />
-              <TextField required {...nombre.props} />
+              <TextField {...nombre.props} />
             </div>
             <div style={{ textAlign: "center" }}>
-              <TextField required {...apellido.props} />
+              <TextField {...apellido.props} />
               <TextField required {...password.props} />
             </div>
             <div style={{ textAlign: "center" }}>
               <TextField
-                required
                 type="number"
                 placeholder="Telefono"
                 {...telefono}
