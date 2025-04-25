@@ -7,7 +7,7 @@ import {
 import Item from "@common/components/Item";
 import { OutherTheme } from "@common/styles/OutherTheme";
 import { AppProvider } from "@toolpad/core";
-import logo from "@assets/logo-ecys-fiusac-min.png";
+import logo from "@assets/logo.png";
 import fondo from "@assets/fiusac01.jpg";
 
 

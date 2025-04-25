@@ -56,7 +56,7 @@ import { formatDate } from "../utils/formatDate";
                     {row.Apellido}
                   </StyledTableCell>
                   <StyledTableCell align="left">
-                    {formatDate(row.Fecha).split(", ")[0]}
+                    {formatDate(row.Fecha).split(" ")[0]}
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     {row.Horas_completadas}
