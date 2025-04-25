@@ -18,7 +18,6 @@ function CustomAccountMenu() {
     <Stack direction="column">
       <AccountPreview variant="expanded" />
       <Divider />
-      {rol == 1 ? (
         <MenuList>
           <Link to={"./perfil"} style={{ textDecoration: "none" }}>
             <Button
@@ -32,7 +31,7 @@ function CustomAccountMenu() {
             </Button>
           </Link>
         </MenuList>
-      ) : null}
+      
       <Divider />
       <AccountPopoverFooter>
         <SignOutButton />

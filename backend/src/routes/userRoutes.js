@@ -20,6 +20,7 @@ const { delete_horario } = require('../controllers/auxiliar/delete_schedules');
 const { obtenerHorariosAuxiliarPersonal } = require('../controllers/auxiliar/get_schedules_aux');
 const { reporte_global_horas} = require('../controllers/admin/reporte_global_horas');
 const { reporte_horas_individual } = require('../controllers/auxiliar/reporte_horas_individual');
+const { searchAuxiliarAux } = require('../controllers/auxiliar/getinfoAux');//para obtener un solo auxiliar
 //aca estaran todas las rutas de los auxiliares y administradores
 
 router.get('/admin/reporte_global_horas',adminRequired,reporte_global_horas);
@@ -48,6 +49,6 @@ router.delete('/aux/eliminarHorario/:Id_horario', delete_horario);
 router.get('/aux/horarios_auxiliar',auxiliarRequired, obtenerHorariosAuxiliarPersonal);
 router.get('/aux/reporte_horas_individual',auxiliarRequired,reporte_horas_individual);
 router.put('/editar_perfil/:id',auxiliarRequired, edit_aux);
-
+router.get('/getInfo/:carne',auxiliarRequired, searchAuxiliarAux)
 
 module.exports = router;
