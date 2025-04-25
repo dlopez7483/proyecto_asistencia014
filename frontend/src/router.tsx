@@ -11,6 +11,7 @@ import ReporteIndividual from "@pages/usuarios/tutor/reportes/ReporteIndividual"
 import VerHorario from "@pages/usuarios/tutor/horario/verhorario";
 import TutorVerification from "@common/components/TutorVerification";
 import AdminVerification from "@common/components/AdminVerification";
+import PerfilAux from "@pages/usuarios/tutor/perfil/Perfil";
 //import AuthVerification from "@common/components/AuthVerification";
 
 const router = createBrowserRouter([
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
         path: "reportes",
         element: <ReporteIndividual />,
       },
+      {
+        path: "perfil",
+        element: <PerfilAux />,
+      }
     ],
   },
 ]);
