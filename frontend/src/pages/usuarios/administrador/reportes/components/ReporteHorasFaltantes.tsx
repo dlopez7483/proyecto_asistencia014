@@ -77,10 +77,10 @@ export default function ReporteHorasFaltantes() {
                       {row.Nombre}
                     </StyledTableCell>
                     <StyledTableCell align="left">
-                      {row.horas_trabajadas}
+                      {(row.horas_trabajadas/3600).toFixed(2)}
                     </StyledTableCell>
                     <StyledTableCell align="left">
-                      {row.horas_faltantes}
+                      {(row.horas_faltantes/3600).toFixed(2)}
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -96,12 +96,12 @@ export default function ReporteHorasFaltantes() {
                   data: [
                     {
                       id: 0,
-                      value: currentTutor.horas_trabajadas,
+                      value: Number((currentTutor.horas_trabajadas/3600).toFixed(2)),
                       label: "Horas Trabajadas",
                     },
                     {
                       id: 1,
-                      value: currentTutor.horas_faltantes,
+                      value: Number((currentTutor.horas_faltantes/3600).toFixed(2)),
                       label: "Horas Faltantes",
                     },
                   ],

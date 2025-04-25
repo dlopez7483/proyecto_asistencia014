@@ -10,8 +10,8 @@ exports.reporteHorasFaltantes = async (req, res) => {
                 a.Id_auxiliar,
                 a.Nombre,
                 a.codigo_RFID, -- Se agrega el campo codigo_RFID
-                COALESCE(SUM(TIMESTAMPDIFF(HOUR, ae.Hora_marcacion, ase.Hora_marcacion)), 0) AS horas_trabajadas,
-                (400 - COALESCE(SUM(TIMESTAMPDIFF(HOUR, ae.Hora_marcacion, ase.Hora_marcacion)), 0)) AS horas_faltantes
+                COALESCE(SUM(TIMESTAMPDIFF(SECOND, ae.Hora_marcacion, ase.Hora_marcacion)), 0) AS horas_trabajadas,
+                ((400*3600) - COALESCE(SUM(TIMESTAMPDIFF(SECOND, ae.Hora_marcacion, ase.Hora_marcacion)), 0)) AS horas_faltantes
             FROM 
                 Auxiliar a
             LEFT JOIN 

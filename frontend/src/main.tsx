@@ -10,7 +10,10 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './router';
 import { Provider } from 'react-redux';
 import { store } from '@common/store';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es-mx';
 
+dayjs.locale('es-mx');
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
