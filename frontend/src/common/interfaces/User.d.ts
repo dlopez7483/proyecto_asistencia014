@@ -1,12 +1,12 @@
 interface User {
-  readonly id_usuario: number;
-  nombre: string;
-  apellido: string;
-  carne: string;
-  telefono: string;
-  contrasenia: string;
-  codigo_RFID?: string;
-  rol: number;
+  Id_auxiliar?: number;
+  Nombre?: string;
+  Apellido?: string;
+  Carne?: string;
+  Telefono?: string;
+  Contrasenia?: string;
+  Codigo_RFID?: string;
+  Id_rol?: number;
 }
 
-export { User, UserLogged };
+export { User };

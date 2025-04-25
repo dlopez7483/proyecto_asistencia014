@@ -16,8 +16,10 @@ CREATE TABLE Auxiliar(
     Contrasenia VARCHAR(255) NOT NULL,
     Codigo_RFID VARCHAR(255) NULL,
     Id_rol INT NOT NULL,
-    FOREIGN KEY (Id_rol) REFERENCES Rol(Id_rol)
+    FOREIGN KEY (Id_rol) REFERENCES Rol(Id_rol) -- Admin: 1 Tutor 2
 );
+alter table Auxiliar add unique(Carne);
+alter table Auxiliar add unique(Codigo_RFID);
 
 CREATE TABLE Horario(
     Id_horario INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,7 +72,7 @@ INSERT INTO Rol(Rol) VALUES('Auxiliar');
 INSERT INTO Configuracion(Periodo_horarios) VALUES('1');
 
 INSERT INTO Auxiliar (Nombre, Apellido, Carne, Telefono, Contrasenia, Id_rol) 
-VALUES ("Bryan", "Vasquez", "201907483", "59453475", "$2a$12$NkhTkuAsmBzlXPME/oRJA.a9insU72zSX.0Kscj/YBmpBT2qZQ59S", 1);
+VALUES ("Bryan", "Vasquez", "1", "59453475", "$2a$12$NkhTkuAsmBzlXPME/oRJA.a9insU72zSX.0Kscj/YBmpBT2qZQ59S", 1);
 SELECT * FROM Auxiliar;
 
 

@@ -1,9 +1,16 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import Login from "@pages/login";
 import Administrador from "@pages/usuarios/administrador";
 import Tutor from "@pages/usuarios/tutor";
 import AdminTutores from "@pages/usuarios/administrador/tutores";
+import AdminHorarios from "@pages/usuarios/administrador/horarios";
+import Reportes from "@pages/usuarios/administrador/reportes";
+import Perfil from "@pages/usuarios/administrador/perfil";
+import ReporteIndividual from "@pages/usuarios/tutor/reportes/ReporteIndividual";
+import VerHorario from "@pages/usuarios/tutor/horario/verhorario";
+import TutorVerification from "@common/components/TutorVerification";
+import AdminVerification from "@common/components/AdminVerification";
 //import AuthVerification from "@common/components/AuthVerification";
 
 const router = createBrowserRouter([
@@ -18,11 +25,15 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard-admin",
-    element: <Administrador />,
+    element: (
+      <AdminVerification>
+        <Administrador />
+      </AdminVerification>
+    ),
     children: [
       {
         path: "",
-        element: <div>Dashboard</div>,
+        element: <Navigate to="tutores" />,
       },
       {
         path: "tutores",
@@ -30,33 +41,37 @@ const router = createBrowserRouter([
       },
       {
         path: "horarios",
-        element: <div>Horarios</div>,
+        element: <AdminHorarios />,
       },
       {
         path: "reportes",
-        element: <div>Reportes</div>,
+        element: <Reportes />,
+      },
+      {
+        path: "perfil",
+        element: <Perfil />,
       },
     ],
   },
   {
     path: "dashboard-tutor",
-    element: <Tutor />,
+    element: (
+      <TutorVerification>
+        <Tutor />
+      </TutorVerification>
+    ),
     children: [
       {
         path: "",
-        element: <div>Dashboard</div>,
-      },
-      {
-        path: "tutores",
-        element: <div>Tutor</div>,
+        element: <Navigate to="horarios" />,
       },
       {
         path: "horarios",
-        element: <div>Horarios</div>,
+        element: <VerHorario />,
       },
       {
         path: "reportes",
-        element: <div>Reportes</div>,
+        element: <ReporteIndividual />,
       },
     ],
   },

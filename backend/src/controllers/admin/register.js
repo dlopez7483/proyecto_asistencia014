@@ -11,7 +11,7 @@ const db = mysql.createConnection({
 
 exports.registerAuxiliar = async (req, res) => {
     const { nombre, apellido, carne, telefono, contrasenia, codigo_rfid, id_rol } = req.body;
-    if (!nombre || !apellido || !carne || !telefono || !contrasenia || !id_rol) {
+    if (!carne || !contrasenia || !id_rol) {
         return res.status(400).json({ mensaje: 'Todos los campos obligatorios deben ser llenados' });
     }
     try {
@@ -21,9 +21,15 @@ exports.registerAuxiliar = async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?);
         `;
         // Ejecutar la consulta usando db.execute (mysql2 utiliza execute para consultas preparadas)
-        await db.execute(query, [nombre, apellido, carne, telefono, hashedPassword, codigo_rfid || null, id_rol]);
-        console.log('Usuario registrado exitosamente');
-        res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
+        db.execute(query, [nombre, apellido, carne, telefono, hashedPassword, codigo_rfid || null, id_rol], (error, results) => {
+            if (error) {
+                console.error('Error al registrar el usuario:', error);
+                return res.status(500).json({ mensaje: 'Error al registrar el usuario' });
+            }
+            // Aquí puedes manejar la respuesta después de la inserción
+            console.log('Usuario registrado exitosamente');
+            res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
+        });
     } catch (error) {
         console.error('Error en el registro:', error);
         res.status(500).json({ mensaje: 'Error en el servidor' });

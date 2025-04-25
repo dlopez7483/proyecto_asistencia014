@@ -25,6 +25,7 @@ exports.marcar_entrada = async (req, res) => {
             connection.release();
             return res.status(400).json({ mensaje: "No se encontraron horarios para el auxiliar en este día" });
         }
+        
 
         const idAuxiliar = rows[0][0].Id_auxiliar;
         const fechaHoy = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD

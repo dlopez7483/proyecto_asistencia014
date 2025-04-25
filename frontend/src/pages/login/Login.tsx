@@ -7,6 +7,8 @@ import {
 import Item from "@common/components/Item";
 import { OutherTheme } from "@common/styles/OutherTheme";
 import { AppProvider } from "@toolpad/core";
+import logo from "@assets/logo.png";
+import fondo from "@assets/fiusac01.jpg";
 
 
 import FormLogin from "./components/FormLogin";
@@ -29,7 +31,7 @@ function Login() {
             <Container sx={{ marginBottom: "auto", maxHeight: "20%" }}>
               <img
                 id="logo-dtt"
-                src="/src/assets/logo-ecys-fiusac-min.png"
+                src={logo}
                 alt="Usac"
               />
             </Container>
@@ -39,7 +41,7 @@ function Login() {
         <Grid2 size={{ xs: 0, sm: 0, md: 8, lg: 9 }} sx={{ height: "100%" }}>
           <img
             id="foto-usac"
-            src="/src/assets/fiusac01.jpg"
+            src={fondo}
             alt="Usac Ingenieria"
           />
         </Grid2>

@@ -1,0 +1,19 @@
+FROM node:23-alpine AS build
+
+WORKDIR /dist/src/app
+
+RUN npm cache clean --force
+
+COPY . .
+RUN npm install
+RUN npm run build --prod
+
+FROM nginx:1.27.5 AS ngi
+
+ENV TZ=America/Guatemala
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY --from=build /dist/src/app/dist /usr/share/nginx/html
+COPY /nginx.conf  /etc/nginx/conf.d/default.conf
+
+EXPOSE 80

@@ -5,14 +5,13 @@ import type { Branding } from "@toolpad/core";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import { Outlet } from "react-router-dom";
-import { OutherTheme } from "../styles/OutherTheme";
 import { ThemeProvider } from "@mui/material";
-import { InnerTheme } from "../styles/InnerTheme";
-import React from "react";
-import { useAppSelector } from "@common/store/hooks/useStoreHooks";
-import { useAuthActions } from "@common/store/hooks/useAuthActions";
-import CustomAccount from "./CustomAccount";
+
+import React, { useEffect } from "react";
+import { useAppSelector, useAuthActions } from "@common/store/hooks";
 import logoutFunction from "@common/services/logoutFunction";
+import CustomAccount from "./CustomAccount";
+import { InnerTheme, OutherTheme } from "@common/styles";
 
 interface Props {
   branding: Branding;
@@ -21,7 +20,7 @@ interface Props {
 
 export default function Dashboard(props: Props) {
   const { deleteAuthAction } = useAuthActions();
-  const currentAuth = useAppSelector((state) => state.auth);
+  const { auth } = useAppSelector((state) => state);
 
   const authentication = React.useMemo(() => {
     return {
@@ -47,7 +46,7 @@ export default function Dashboard(props: Props) {
       authentication={authentication}
       session={{
         user: {
-          name: currentAuth.carne,
+          name: auth.carne,
         },
       }}
     >
