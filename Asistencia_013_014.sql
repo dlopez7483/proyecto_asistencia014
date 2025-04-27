@@ -44,7 +44,7 @@ SELECT * FROM  Auxiliar_Horario;
 CREATE TABLE Asistencia_Entrada(
     Id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
     Id_auxiliar INT NOT NULL,
-    Id_horario INT NOT NULL,
+    Id_horario INT,
     Fecha DATE NOT NULL,
     Hora_marcacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -55,7 +55,7 @@ CREATE TABLE Asistencia_Entrada(
 CREATE TABLE Asistencia_Salida(
     Id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
     Id_auxiliar INT NOT NULL,
-    Id_horario INT NOT NULL,
+    Id_horario INT,
     Fecha DATE NOT NULL,
     Hora_marcacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Id_auxiliar) REFERENCES Auxiliar(Id_auxiliar) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -66,15 +66,6 @@ CREATE TABLE Configuracion (
     Id_configuracion INT PRIMARY KEY AUTO_INCREMENT,
     Periodo_horarios TINYINT DEFAULT 0 -- '0' = cerrado, '1' = abierto
 );
-
-INSERT INTO Rol(Rol) VALUES('Admin');
-INSERT INTO Rol(Rol) VALUES('Auxiliar');
-INSERT INTO Configuracion(Periodo_horarios) VALUES('1');
-
-INSERT INTO Auxiliar (Nombre, Apellido, Carne, Telefono, Contrasenia, Id_rol) 
-VALUES ("Bryan", "Vasquez", "1", "59453475", "$2a$12$NkhTkuAsmBzlXPME/oRJA.a9insU72zSX.0Kscj/YBmpBT2qZQ59S", 1);
-SELECT * FROM Auxiliar;
-
 
 DELIMITER $$
 
@@ -93,13 +84,23 @@ END$$
 
 DELIMITER ;
 
-CALL ObtenerHorariosAuxiliarPorRFID('15F5d', 'Viernes');
 
+DELIMITER $$
 
+CREATE PROCEDURE registrarHorarioExtra(
+	IN tutor INT,
+    IN fecha DATE,
+    IN entrada TIME,
+    IN salida TIME
+)
+BEGIN
+   insert into Horario(Dia_semana, Hora_entrada,Hora_salida) values ("Extra", entrada, salida);
+   set @idHorario = LAST_INSERT_ID();
 
+   insert INTO  Asistencia_Entrada(Id_auxiliar, Id_horario, Fecha, Hora_Marcacion) values (tutor, @idHorario, fecha, CONCAT(fecha," ",entrada));
+   
+   
+   insert INTO  Asistencia_Salida(Id_auxiliar, Id_horario, Fecha, Hora_Marcacion) values (tutor, @idHorario, fecha, CONCAT(fecha," ",salida));
+END$$
 
-SELECT * FROM Asistencia_Entrada;
-delete FROM Asistencia_Entrada WHERE Id_auxiliar=2;
-SELECT * from Horario where Dia_semana="Viernes";
-
-delete from Horario where Dia_semana="Viernes" and Id_horario=6;
+DELIMITER ;

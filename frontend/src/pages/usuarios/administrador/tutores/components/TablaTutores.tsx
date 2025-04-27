@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AlarmAddIcon from "@mui/icons-material/AlarmAdd";
 import {
   StyledTableCell,
   StyledTableRow,
@@ -21,9 +22,11 @@ import ModalUpdateForm from "./ModalUpdateForm";
 import { useModal } from "@common/hooks";
 import Swal from "sweetalert2";
 import { User } from "@common/interfaces/User";
+import ModalAgregarHoras from "./ModalAgregarHoras";
 
 export default function TablaTutores() {
   const modalUpdate = useModal(false, {});
+  const modalAddHours = useModal(false, {});
   const { tutores, currentTutor } = useAppSelector((state) => state.tutores);
   const { deleteTutor, setCurrentUser } = useUsersActions();
 
@@ -91,6 +94,16 @@ export default function TablaTutores() {
                   >
                     <Button
                       variant="contained"
+                      color="warning"
+                      onClick={() => {
+                        modalAddHours.handleOpen();
+                        modalAddHours.setData(row);
+                      }}
+                    >
+                      <AlarmAddIcon />
+                    </Button>
+                    <Button
+                      variant="contained"
                       onClick={() => {
                         modalUpdate.handleOpen();
                         modalUpdate.setData(row);
@@ -113,6 +126,7 @@ export default function TablaTutores() {
         </Table>
       </TableContainer>
       <ModalUpdateForm modal={modalUpdate} />
+      <ModalAgregarHoras modal={modalAddHours} />
     </>
   );
 }

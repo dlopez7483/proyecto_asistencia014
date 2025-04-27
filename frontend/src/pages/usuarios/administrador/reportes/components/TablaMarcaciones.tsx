@@ -59,13 +59,13 @@ export default function TablaMarcaciones({
                   {row.Apellido}
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  {formatDate(row.Fecha).split(" ")[0]}
+                  {formatDate(row.Fecha).split(", ")[0]}
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  {formatDate(row.Hora_entrada).split(" ")[1]}
+                  {formatDate(row.Hora_entrada).split(", ")[1]}
                 </StyledTableCell>
                 <StyledTableCell align="left">
-                  {formatDate(row.Hora_salida).split(" ")[1]}
+                  {formatDate(row.Hora_salida).split(", ")[1]}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

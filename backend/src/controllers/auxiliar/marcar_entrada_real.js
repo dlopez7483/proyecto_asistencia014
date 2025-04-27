@@ -10,16 +10,15 @@ exports.marcar_entrada = async (req, res) => {
 
         // Establecer la zona horaria de Guatemala (UTC-6)
         const fecha = new Date();
-        const fechaLocal = new Date(fecha.toLocaleString('en-US', { timeZone: 'America/Guatemala' }));
 
         const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        const diaSemana = diasSemana[fechaLocal.getDay()];
+        const diaSemana = diasSemana[fecha.getDay()];
         
         // Obtener la hora actual en formato HH:mm:ss en zona horaria de Guatemala
-        const horaActual = fechaLocal.toLocaleTimeString('es-GT', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const horaActual = fecha.toLocaleTimeString('es-GT', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
         console.log(`Hoy es ${diaSemana}, la hora actual en Guatemala es ${horaActual}`);
-        console.log(fechaLocal);
+        console.log(fecha.toLocaleString('en-US', { timeZone: 'America/Guatemala' }));
 
         // Obtener los horarios del auxiliar para ese día
         const [rows] = await connection.query("CALL ObtenerHorariosAuxiliarPorRFID(?, ?)", [rfid, diaSemana]);
@@ -29,7 +28,8 @@ exports.marcar_entrada = async (req, res) => {
         }
 
         const idAuxiliar = rows[0][0].Id_auxiliar;
-        const fechaHoy = fechaLocal.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        const fechaHoy = fecha.toLocaleDateString("sv-VS"); // Formato YYYY-MM-DD
+        console.log(`Fecha de hoy: ${fechaHoy}`);
         console.log(rows[0]);
 
         let entradaMarcada = false; // Flag para verificar si ya se marcó la entrada
@@ -50,14 +50,17 @@ exports.marcar_entrada = async (req, res) => {
             }
 
             // Calcular rango de marcación (20 minutos antes o después)
-            const horaEntradaDate = new Date(`${fechaHoy}T${horaEntrada}`);
+            const horaEntradaDate = new Date(`${fechaHoy} ${horaEntrada}`);
             const rangoInicio = new Date(horaEntradaDate.getTime() - 20 * 60000); // -20 min
             const rangoFin = new Date(horaEntradaDate.getTime() + 20 * 60000); // +20 min
-            const horaActualDate = new Date(`${fechaHoy}T${horaActual}`); // Usamos la hora de prueba
+            const horaActualDate = new Date(`${fechaHoy} ${horaActual}`); // Usamos la hora de prueba
+            console.log(`Hora de entrada: ${horaEntrada}`);
+            console.log(`Rango de marcación: ${rangoInicio} - ${rangoFin}`);
+            console.log(`Hora actual: ${horaActualDate}`);
 
             if (horaActualDate >= rangoInicio && horaActualDate <= rangoFin) {
                 // Crear el valor de Hora_marcacion como un DATETIME
-                const horaMarcacion = `${fechaHoy}T${horaActual}`; // Combina la fecha con la hora para el DATETIME
+                const horaMarcacion = `${fechaHoy} ${horaActual}`; // Combina la fecha con la hora para el DATETIME
 
                 // Insertar asistencia
                 await connection.query(
