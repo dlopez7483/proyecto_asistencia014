@@ -17,9 +17,6 @@ exports.crear_horario = async (req, res) => {
             SELECT Id_auxiliar FROM Auxiliar WHERE Carne = ?;
          `;
 
-         
-         
-
          const [Id_auxiliar] = await connection.execute(obtener_id_aux, [carne]);
          const [verificarHorario] = await connection.execute(verificarHorarioQuery, [dia_semana, hora_entrada, hora_salida]); 
          const obtner_horarios_auxiliar = `
@@ -27,12 +24,11 @@ exports.crear_horario = async (req, res) => {
                ha.Hora_entrada,
                ha.Hora_salida,
                ha.Dia_semana
-               FROM horario ha
-               INNER JOIN auxiliar_horario h ON ha.Id_horario = h.Id_horario
+               FROM Horario ha
+               INNER JOIN Auxiliar_Horario h ON ha.Id_horario = h.Id_horario
                INNER JOIN Auxiliar a ON  h.Id_auxiliar= a.Id_auxiliar
                WHERE a.Id_auxiliar = ?
                AND ha.Dia_semana = ?;
-
          `;
 
 
@@ -56,8 +52,8 @@ exports.crear_horario = async (req, res) => {
 
         const entradaExistente = new Date(`${fechaBase}T${formatHora(horaEntrada)}`).getTime();
         const salidaExistente = new Date(`${fechaBase}T${formatHora(horaSalida)}`).getTime();
-        const nuevaEntrada = new Date(`${fechaBase}T${formatHora(hora_entrada)}`).getTime();
-        const nuevaSalida = new Date(`${fechaBase}T${formatHora(hora_salida)}`).getTime();
+        const nuevaEntrada = new Date(`${fechaBase}T${formatHora(hora_entrada+":00")}`).getTime();
+        const nuevaSalida = new Date(`${fechaBase}T${formatHora(hora_salida+":00")}`).getTime();
 
         console.log('Entrada existente:', entradaExistente);
         console.log('Salida existente:', salidaExistente);

@@ -1,7 +1,8 @@
-import { Button, ButtonGroup, Chip, Paper, Typography } from "@mui/material";
+import { Button, ButtonGroup, Chip, ChipPropsColorOverrides, Paper, Typography } from "@mui/material";
 import { changeEstadoPeriodoHorarios } from "../services";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
+import { OverridableStringUnion } from "@mui/types";
 
 export default function BtnPeriodoHorarios() {
   const {
@@ -9,13 +10,26 @@ export default function BtnPeriodoHorarios() {
     deshabilitar_periodo_horarios,
     getEstadoPeriodoHorarios,
   } = changeEstadoPeriodoHorarios();
-  const [estado, setEstado] = useState({
+  const [estado, setEstado] = useState<{
+    label: string;
+    color: OverridableStringUnion<
+      | "default"
+      | "primary"
+      | "secondary"
+      | "error"
+      | "info"
+      | "success"
+      | "warning",
+      ChipPropsColorOverrides
+    >;
+  }>({
     label: "Desconocido",
     color: "default",
   });
 
   useEffect(() => {
     getEstadoPeriodoHorarios().then((response) => {
+      console.log(response);
       if (response.status === 200) {
         setEstado({
           label: response.estado,
@@ -33,12 +47,6 @@ export default function BtnPeriodoHorarios() {
   const handleHabilitar = () => {
     habilitar_periodo_horarios().then((response) => {
       if (response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Periodo de horarios habilitado",
-          showConfirmButton: false,
-          timer: 1500,
-        });
         setEstado({
           label: "habilitado",
           color: "success",
@@ -56,12 +64,6 @@ export default function BtnPeriodoHorarios() {
   const handleDeshabilitar = () => {
     deshabilitar_periodo_horarios().then((response) => {
       if (response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Periodo de horarios deshabilitado",
-          showConfirmButton: false,
-          timer: 1500,
-        });
         setEstado({
           label: "deshabilitado",
           color: "error",
@@ -77,7 +79,15 @@ export default function BtnPeriodoHorarios() {
   };
 
   return (
-    <Paper sx={{ padding: "10px", margin: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <Paper
+      sx={{
+        padding: "10px",
+        margin: "10px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <Typography variant="h5" sx={{ mr: "10px" }}>
         Estado del Periodo de Horarios
         <Chip sx={{ ml: 1 }} {...estado} variant="outlined" />

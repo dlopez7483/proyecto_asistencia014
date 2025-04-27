@@ -17,7 +17,7 @@ exports.reporteHorasFaltantes = async (req, res) => {
             LEFT JOIN 
                 Asistencia_Entrada ae ON a.Id_auxiliar = ae.Id_auxiliar
             LEFT JOIN 
-                Asistencia_Salida ase ON a.Id_auxiliar = ase.Id_auxiliar AND ae.Fecha = ase.Fecha
+                Asistencia_Salida ase ON a.Id_auxiliar = ase.Id_auxiliar AND ae.Fecha = ase.Fecha AND ae.Id_horario = ase.Id_horario
             GROUP BY 
                 a.Id_auxiliar, a.Nombre, a.codigo_RFID -- Se agregan estos campos al GROUP BY
             HAVING 

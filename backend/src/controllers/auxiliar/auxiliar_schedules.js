@@ -34,8 +34,8 @@ exports.agregarHorarioPracticante = async (req, res) => {
                ha.Hora_entrada,
                ha.Hora_salida,
                ha.Dia_semana
-               FROM horario ha
-               INNER JOIN auxiliar_horario h ON ha.Id_horario = h.Id_horario
+               FROM Horario ha
+               INNER JOIN Auxiliar_Horario h ON ha.Id_horario = h.Id_horario
                INNER JOIN Auxiliar a ON  h.Id_auxiliar= a.Id_auxiliar
                WHERE a.Id_auxiliar = ?
                AND ha.Dia_semana = ?;
@@ -45,11 +45,11 @@ exports.agregarHorarioPracticante = async (req, res) => {
         // Conectar a la base de datos
         const connection = await mysql.createConnection(config.db);
         const [horariosAuxiliar] = await connection.execute(obtner_horarios_auxiliar, [id_auxiliar, dia_semana]);
+        console.log('Horarios del auxiliar:', horariosAuxiliar);
         for (let i = 0; i < horariosAuxiliar.length; i++) {
             const horario = horariosAuxiliar[i];
             const horaEntrada = horario.Hora_entrada;
             const horaSalida = horario.Hora_salida;
-        
             
         
         // Convertir las horas a milisegundos desde la medianoche
@@ -58,13 +58,14 @@ exports.agregarHorarioPracticante = async (req, res) => {
         // Asegura formato HH:mm:ss rellenando cada parte si es necesario
         const formatHora = (hora) => {
             const [h, m, s] = hora.split(':');
+            console.log('Hora:', hora, 'h:', h, 'm:', m, 's:', s); // Debugging
             return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
         };
 
         const entradaExistente = new Date(`${fechaBase}T${formatHora(horaEntrada)}`).getTime();
         const salidaExistente = new Date(`${fechaBase}T${formatHora(horaSalida)}`).getTime();
-        const nuevaEntrada = new Date(`${fechaBase}T${formatHora(hora_entrada)}`).getTime();
-        const nuevaSalida = new Date(`${fechaBase}T${formatHora(hora_salida)}`).getTime();
+        const nuevaEntrada = new Date(`${fechaBase}T${formatHora(hora_entrada+":00")}`).getTime();
+        const nuevaSalida = new Date(`${fechaBase}T${formatHora(hora_salida+":00")}`).getTime();
 
         console.log('Entrada existente:', entradaExistente);
         console.log('Salida existente:', salidaExistente);

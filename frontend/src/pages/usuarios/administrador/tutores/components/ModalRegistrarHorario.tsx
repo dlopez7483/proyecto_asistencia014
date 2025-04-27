@@ -42,7 +42,7 @@ export default function ModalRegistrarForm({ modal }: { modal: any }) {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: res.message,
+          text: res.mensaje,
           showConfirmButton: true,
         });
       }

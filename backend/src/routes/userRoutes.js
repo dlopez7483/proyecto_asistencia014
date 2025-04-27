@@ -14,6 +14,7 @@ const { obtenerTodosLosAuxiliares } = require('../controllers/admin/getInfoAuxil
 const { searchAuxiliar } = require('../controllers/admin/getInfoAuxiliares');//para obtener un solo auxiliar
 const { getAllSchedules } = require('../controllers/admin/getAllSchedules');//para obtener todos los horarios
 const { crear_horario } = require('../controllers/admin/crear_horario');//para crear horarios
+const { cambiarEstadoSalidas } = require('../controllers/admin/config_salidas_extemporaneas');//para habilitar o deshabilitar las salidas extemporaneas
 //rutas de los auxiliares
 const { agregarHorarioPracticante } = require('../controllers/auxiliar/auxiliar_schedules')
 const { delete_horario } = require('../controllers/auxiliar/delete_schedules');
@@ -21,6 +22,7 @@ const { obtenerHorariosAuxiliarPersonal } = require('../controllers/auxiliar/get
 const { reporte_global_horas} = require('../controllers/admin/reporte_global_horas');
 const { reporte_horas_individual } = require('../controllers/auxiliar/reporte_horas_individual');
 const { searchAuxiliarAux } = require('../controllers/auxiliar/getinfoAux');//para obtener un solo auxiliar
+const { set_hours } = require('../controllers/admin/set_hours');
 //aca estaran todas las rutas de los auxiliares y administradores
 
 router.get('/admin/reporte_global_horas',adminRequired,reporte_global_horas);
@@ -37,6 +39,8 @@ router.get('resetear_horarios/admin', adminRequired, resetSchedules);
 router.get('/getAllAuxiliares/admin', adminRequired, obtenerTodosLosAuxiliares);
 router.get('/getInfoAux/admin/:carne', adminRequired, searchAuxiliar);
 router.get('/admin/getAllSchedules',adminRequired,getAllSchedules);
+router.post('/admin/set_hours', adminRequired, set_hours);
+router.put('/admin/changeSalidasExtemporaneas',adminRequired, cambiarEstadoSalidas)
 
 //router.get('/verificar_estado_periodo_horarios', configuracionController.verificarEstadoPeriodoHorarios);
 

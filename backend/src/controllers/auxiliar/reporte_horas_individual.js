@@ -1,25 +1,27 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
-const { verifyToken } = require('../../utils/jwtUtils');
+const mysql = require("mysql2/promise");
+const config = require("../../config/config");
+const { verifyToken } = require("../../utils/jwtUtils");
 
 exports.reporte_horas_individual = async (req, res) => {
-    try {
-        // Obtener token del header
-        const token = req.headers.authorization?.split(' ')[1];
+  try {
+    // Obtener token del header
+    const token = req.headers.authorization?.split(" ")[1];
 
-        if (!token) {
-            return res.status(401).json({ mensaje: 'No autorizado. Token requerido.' });
-        }
+    if (!token) {
+      return res
+        .status(401)
+        .json({ mensaje: "No autorizado. Token requerido." });
+    }
 
-        // Verificar y decodificar el token
-        const decoded = verifyToken(token);
-        const carne = decoded.carne; // Extraer el carné del token
+    // Verificar y decodificar el token
+    const decoded = verifyToken(token);
+    const carne = decoded.carne; // Extraer el carné del token
 
-        // Conectar a la base de datos
-        const connection = await mysql.createConnection(config.db);
+    // Conectar a la base de datos
+    const connection = await mysql.createConnection(config.db);
 
-        // Consulta para obtener los horarios del auxiliar autenticado
-        const query_marcaciones = `
+    // Consulta para obtener los horarios del auxiliar autenticado
+    const query_marcaciones = `
            SELECT
   a.Id_auxiliar,
   a.Nombre,
@@ -39,7 +41,7 @@ INNER JOIN Asistencia_Salida s
 ORDER BY e.Fecha, a.Nombre, a.Apellido;
         `;
 
-        const query_horas_acumuladas = `
+    const query_horas_acumuladas = `
 WITH asistencias_completas AS (
     SELECT
         a.Id_auxiliar,
@@ -48,7 +50,7 @@ WITH asistencias_completas AS (
         h.Id_horario,
         h.Hora_entrada,
         h.Hora_salida,
-        TIMESTAMPDIFF(SECOND, h.Hora_entrada, h.Hora_salida) AS duracion_segundos
+        TIMESTAMPDIFF(SECOND, e.Hora_marcacion, s.Hora_marcacion) AS duracion_segundos
     FROM Auxiliar a
     INNER JOIN Asistencia_Entrada e ON a.Id_auxiliar = e.Id_auxiliar
     INNER JOIN Asistencia_Salida s
@@ -77,7 +79,7 @@ ORDER BY hc.Total_horas_segundos DESC;
 
         `;
 
-        const query_horas_diarias = `
+    const query_horas_diarias = `
         WITH horas_diarias AS (
             SELECT
                 a.Id_auxiliar,
@@ -106,23 +108,27 @@ ORDER BY hc.Total_horas_segundos DESC;
         ORDER BY h.Id_auxiliar, h.Fecha;
         `;
 
-        // Ejecutar consultas
-        const [marcaciones] = await connection.execute(query_marcaciones, [carne]);
-        const [horas_acumuladas] = await connection.execute(query_horas_acumuladas, [carne]);
-        const [horas_por_fecha] = await connection.execute(query_horas_diarias, [carne]);
+    // Ejecutar consultas
+    const [marcaciones] = await connection.execute(query_marcaciones, [carne]);
+    const [horas_acumuladas] = await connection.execute(
+      query_horas_acumuladas,
+      [carne]
+    );
+    const [horas_por_fecha] = await connection.execute(query_horas_diarias, [
+      carne,
+    ]);
 
-        // Cerrar conexión después de obtener los datos
-        await connection.end();
+    // Cerrar conexión después de obtener los datos
+    await connection.end();
 
-        // Enviar respuesta con los datos obtenidos
-        res.status(200).json({
-            marcaciones,
-            horas_por_fecha,
-            horas_acumuladas
-        });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ mensaje: 'Error en el servidor' });
-    }
+    // Enviar respuesta con los datos obtenidos
+    res.status(200).json({
+      marcaciones,
+      horas_por_fecha,
+      horas_acumuladas,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: "Error en el servidor" });
+  }
 };

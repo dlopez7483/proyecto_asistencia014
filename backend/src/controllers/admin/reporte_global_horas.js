@@ -20,14 +20,14 @@ INNER JOIN Asistencia_Entrada e
   ON a.Id_auxiliar = e.Id_auxiliar
 INNER JOIN Asistencia_Salida s
   ON a.Id_auxiliar = s.Id_auxiliar
-  AND e.Fecha = s.Fecha AND e.Id_horario = s.Id_horario
+  AND e.Fecha = s.Fecha 
+  AND e.Id_horario = s.Id_horario
 ORDER BY e.Fecha, a.Nombre, a.Apellido;
-
         `;
 
 query_horas_diarias = `
 WITH horas_diarias AS (
-  SELECT
+  SELECT DISTINCT
     a.Id_auxiliar,
     a.Nombre,
     a.Apellido,
@@ -71,7 +71,7 @@ WITH asistencias_completas AS (
     ON a.Id_auxiliar = s.Id_auxiliar 
     AND e.Fecha = s.Fecha 
     AND e.Id_horario = s.Id_horario
-  INNER JOIN Horario h ON h.Id_horario = e.Id_horario
+  LEFT JOIN Horario h ON h.Id_horario = e.Id_horario
 ),
 horas_completadas AS (
   SELECT
@@ -89,7 +89,6 @@ SELECT
   TIME_FORMAT(SEC_TO_TIME(hc.Total_horas_segundos), '%H:%i:%s') AS Horas_acumuladas
 FROM horas_completadas hc
 ORDER BY hc.Total_horas_segundos DESC;
-
 `;
 
 

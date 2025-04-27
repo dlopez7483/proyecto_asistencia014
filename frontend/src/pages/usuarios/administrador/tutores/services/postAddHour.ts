@@ -2,16 +2,10 @@
 import service from "@common/services/Service";
 import { AxiosError } from "axios";
 
-export const postSchedule = async (data: any, carne:string) => {
-  const body = {
-    dia_semana: data.Dia_semana,
-    hora_entrada: data.Hora_entrada,
-    hora_salida: data.Hora_salida,
-    carne,
-  };
+export const postAddHour = async (data: any) => {
 
   try {
-    const res = await service.post(`/user/admin/crear_horario`, body, {
+    const res = await service.post(`/user/admin/set_hours`, data, {
       headers: {
         Authorization:
           "Bearer " +

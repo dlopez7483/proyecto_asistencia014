@@ -11,5 +11,6 @@ RUN npm audit fix --force
 COPY . .
 
 EXPOSE 5000
+ENV TZ=America/Guatemala
 
 CMD ["nodemon", "src/index.js"]
