@@ -17,9 +17,60 @@ exports.crear_horario = async (req, res) => {
             SELECT Id_auxiliar FROM Auxiliar WHERE Carne = ?;
          `;
 
+         
+         
 
          const [Id_auxiliar] = await connection.execute(obtener_id_aux, [carne]);
-         const [verificarHorario] = await connection.execute(verificarHorarioQuery, [dia_semana, hora_entrada, hora_salida]);  
+         const [verificarHorario] = await connection.execute(verificarHorarioQuery, [dia_semana, hora_entrada, hora_salida]); 
+         const obtner_horarios_auxiliar = `
+               SELECT
+               ha.Hora_entrada,
+               ha.Hora_salida,
+               ha.Dia_semana
+               FROM horario ha
+               INNER JOIN auxiliar_horario h ON ha.Id_horario = h.Id_horario
+               INNER JOIN Auxiliar a ON  h.Id_auxiliar= a.Id_auxiliar
+               WHERE a.Id_auxiliar = ?
+               AND ha.Dia_semana = ?;
+
+         `;
+
+
+         const [horariosAuxiliar] = await connection.execute(obtner_horarios_auxiliar, [Id_auxiliar[0].Id_auxiliar, dia_semana]);
+         
+         for (let i = 0; i < horariosAuxiliar.length; i++) {
+            const horario = horariosAuxiliar[i];
+            const horaEntrada = horario.Hora_entrada;
+            const horaSalida = horario.Hora_salida;
+        
+            
+        
+        // Convertir las horas a milisegundos desde la medianoche
+        const fechaBase = "1970-01-01";
+
+        // Asegura formato HH:mm:ss rellenando cada parte si es necesario
+        const formatHora = (hora) => {
+            const [h, m, s] = hora.split(':');
+            return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+        };
+
+        const entradaExistente = new Date(`${fechaBase}T${formatHora(horaEntrada)}`).getTime();
+        const salidaExistente = new Date(`${fechaBase}T${formatHora(horaSalida)}`).getTime();
+        const nuevaEntrada = new Date(`${fechaBase}T${formatHora(hora_entrada)}`).getTime();
+        const nuevaSalida = new Date(`${fechaBase}T${formatHora(hora_salida)}`).getTime();
+
+        console.log('Entrada existente:', entradaExistente);
+        console.log('Salida existente:', salidaExistente);
+        console.log('Nueva entrada:', nuevaEntrada);
+        console.log('Nueva salida:', nuevaSalida);
+        
+            // Verificar si el nuevo horario se solapa con los horarios existentes
+            if (nuevaEntrada < salidaExistente && nuevaSalida > entradaExistente) {
+                await connection.destroy(); // Cerrar conexión
+                return res.status(400).json({ mensaje: 'El nuevo horario traslapa con un horario existente' });
+            }
+        }
+         
          if (verificarHorario.length > 0) {
             const id_horario = verificarHorario[0].Id_horario;
 
