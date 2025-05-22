@@ -10,6 +10,10 @@ const { verifyToken } = require('./middlewares/authMiddleware');
 app.use(express.json());
 app.use(cors());
 
+app.get('/',(req,res) => {
+    res.status(200).json({status:'health'})
+})
+
 app.use('/auth', authRoutes); //cualquier usuario puede usar el login
 
 // Rutas protegidas (requieren JWT)

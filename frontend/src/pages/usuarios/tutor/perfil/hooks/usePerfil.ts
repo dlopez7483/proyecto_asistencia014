@@ -7,10 +7,10 @@ import Swal from "sweetalert2";
 export const usePerfil = () => {
   const { setAuthAction } = useAuthActions();
 
-  const handleUpdate = (datos: any, auth: Auth) => {
+  const handleUpdate = (datos: any, auth: Auth, id: string) => {
     const objDatos = Object.fromEntries(datos.entries());
   
-    updateAuxData(auth.carne, objDatos).then((response) => {
+    updateAuxData(id, objDatos).then((response) => {
       const newAuth = {
         ...auth,
         carne: datos.get("carne_nuevo") ? datos.get("carne_nuevo") : auth.carne,

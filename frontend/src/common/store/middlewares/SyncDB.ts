@@ -13,6 +13,7 @@ export const SyncDB: Middleware = (store) => (next) => (action) => {
   next(action);
 
   if (type === "tutor/updateTutorReducer") {
+    console.log(payload)
     const tutorToUpdate: Map<string, string | number> = new Map();
     if (payload.Nombre) tutorToUpdate.set("nombre", payload.Nombre);
     if (payload.Apellido) tutorToUpdate.set("apellido", payload.Apellido);
@@ -20,7 +21,8 @@ export const SyncDB: Middleware = (store) => (next) => (action) => {
     if (payload.Telefono) tutorToUpdate.set("telefono", payload.Telefono);
     if (payload.Codigo_RFID)
       tutorToUpdate.set("codigo_rfid", payload.Codigo_RFID);
-    if (payload.Password) tutorToUpdate.set("contrasenia", payload.Password);
+    if (payload.Contrasenia) tutorToUpdate.set("contrasenia", payload.Contrasenia);
+    console.log(tutorToUpdate)
 
     updateTutor(tutorToUpdate, payload.Id_auxiliar).then((response) => {
       if (response.status !== 200) {

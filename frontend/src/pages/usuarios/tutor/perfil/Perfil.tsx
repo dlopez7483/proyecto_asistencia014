@@ -3,7 +3,7 @@ import { useField } from "@common/hooks";
 import { useAppSelector } from "@common/store/hooks";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useInputTelefono } from "../../administrador/tutores/hooks/useInputTelefono";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getTutorData } from "./services/getTutorData";
 import { usePerfil } from "./hooks/usePerfil";
 
@@ -16,6 +16,7 @@ export default function PerfilAux() {
   const nombre = useField("text", "Nombre", "");
   const apellido = useField("text", "Apellido", "");
   const password = useField("password", "Password", "");
+  const [id, setId] = useState("");
 
   useEffect(() => {
     getTutorData(auth.carne).then((response) => {
@@ -23,6 +24,7 @@ export default function PerfilAux() {
       nombre.setValue(response.Nombre);
       apellido.setValue(response.Apellido);
       setTelefono({ ...telefono, value: response.Telefono });
+      setId(String(response.Id_auxiliar))
     });
   }, []);
 
@@ -38,7 +40,7 @@ export default function PerfilAux() {
       data.set("contrasenia", password.props.value);
     if (telefono.value !== "") data.set("telefono", telefono.value);
 
-    handleUpdate(data, auth);
+    handleUpdate(data, auth, id);
   }
 
   return (

@@ -41,6 +41,7 @@ export default function ModalUpdateForm({ modal }: { modal: any }) {
     if (telefono.value != "") tutorInfo.Telefono = telefono.value;
     if (rfid.props.value != "") tutorInfo.Codigo_RFID = rfid.props.value;
 
+    console.log(tutorInfo)
     updateTutor(tutorInfo);
     formReset();
     modal.handleClose();

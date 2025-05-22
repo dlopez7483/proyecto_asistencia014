@@ -18,6 +18,7 @@ import {
 import { SetStateAction, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import axios from "axios";
+import { config } from "@config/config";
 
 export default function FormLogin() {
   const usuario = useField("text", "usuario", "");
@@ -40,8 +41,8 @@ export default function FormLogin() {
     try {
       const endpoint =
         tipo === "entrada"
-          ? "http://localhost:5000/auth/marcar_entrada"
-          : "http://localhost:5000/auth/marcar_salida";
+          ? config.SERVER_HOST+ "/auth/marcar_entrada"
+          : config.SERVER_HOST+ "/auth/marcar_salida";
 
       const response = await axios.post(endpoint, { rfid });
       alert(response.data.mensaje || "Asistencia marcada correctamente");

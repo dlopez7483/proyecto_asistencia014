@@ -6,6 +6,8 @@ export const updateAuxData = async (
   datos: Record<string, any>
 ) => {
   try {
+    console.log(carne)
+    console.log(datos)
     const res = await service.put(
       `/user/editar_perfil/${carne}`,
       datos, // cuerpo del request
