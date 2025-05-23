@@ -1,4 +1,4 @@
-const mysqlPool = require('../../config/conexion');
+const mysqlPool = require('../../../config/conexion');
 
 exports.reporteHorasFaltantes = async (req, res) => {
     try {
