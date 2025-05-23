@@ -1,13 +1,9 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 
 exports.marcar_salida = async (req, res) => {
     const { rfid } = req.body;
 
     try {
-        const pool = mysql.createPool(config.db);
-        const connection = await pool.getConnection();
-
         const fecha = new Date();
         const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
         const diaSemana = diasSemana[fecha.getDay()];
@@ -21,9 +17,8 @@ exports.marcar_salida = async (req, res) => {
 
         // Obtener los horarios del auxiliar para ese día
 
-        const [rows] = await connection.query("CALL ObtenerHorariosAuxiliarPorRFID(?, ?)", [rfid, diaSemana]);
+        const [rows] = await mysqlPool.query("CALL ObtenerHorariosAuxiliarPorRFID(?, ?)", [rfid, diaSemana]);
         if (rows[0].length === 0) {
-            connection.release();
             return res.status(400).json({ mensaje: "No se encontraron horarios para el auxiliar en este día" });
         }
         const idAuxiliar = rows[0][0].Id_auxiliar;
@@ -35,33 +30,28 @@ exports.marcar_salida = async (req, res) => {
         for (let horario of rows[0]) {
             const horaSalida = horario.Hora_salida;
             const idHorario = horario.Id_horario;
-            
 
-           const [asistenciaEntrada] = await connection.query(
+            const [asistenciaEntrada] = await mysqlPool.query(
                 "SELECT * FROM Asistencia_Entrada WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
                 [idAuxiliar, idHorario, fechaHoy]
             );
             if (asistenciaEntrada.length === 0) {
                 console.log(`No ha marcado entrada en el horario de ${horaSalida}, no puede marcar salida.`);
-                connection.release();
                 res.status(400).json({ mensaje: `No ha marcado entrada en el horario de ${horaSalida}, no puede marcar salida.` });
-                 // Liberar la conexión antes de salir
-
-                 // Si no ha marcado entrada, no puede marcar salida
+                return; // Si no ha marcado entrada, no puede marcar salida
             }
 
 
             // Verificar si ya marcó asistencia en ese horario
-            const [asistencia] = await connection.query(
+            const [asistencia] = await mysqlPool.query(
                 "SELECT * FROM Asistencia_Salida WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
                 [idAuxiliar, idHorario, fechaHoy]
             );
 
             if (asistencia.length > 0) {
                 console.log(`Ya marcó salida en el horario de ${horaSalida}`);
-                connection.release();
                 res.status(400).json({ mensaje: `Ya marcó salida en el horario de ${horaSalida}` });
-                
+                return;
             }
 
             // Calcular rango de marcación (20 minutos antes o después)
@@ -74,7 +64,7 @@ exports.marcar_salida = async (req, res) => {
                 // Crear el valor de Hora_marcacion como un DATETIME
                 const horaMarcacion = `${fechaHoy}T${horaActual}`; // Combina la fecha con la hora para el DATETIME
 
-                await connection.query(
+                await mysqlPool.query(
                     "INSERT INTO Asistencia_Salida (Id_auxiliar, Id_horario, Fecha, Hora_marcacion) VALUES (?, ?, ?, ?)",
                     [idAuxiliar, idHorario, fechaHoy, horaMarcacion]
                 );
@@ -85,16 +75,12 @@ exports.marcar_salida = async (req, res) => {
                 console.log(`Fuera del rango permitido para marcar salida en el horario de ${horaSalida}`);
             }
         }
-
-        connection.release();
-
-        // connection.release(); // Liberar la conexión al final
-
-
-
-
-    }
-    catch (error) {
+        if (salidaMarcada) {
+            res.status(200).json({ mensaje: "Salida marcada exitosamente" });
+        } else {
+            res.status(400).json({ mensaje: "No se puede marcar salida fuera del rango permitido" });
+        }
+    } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: "Error al marcar la salida" });
     }

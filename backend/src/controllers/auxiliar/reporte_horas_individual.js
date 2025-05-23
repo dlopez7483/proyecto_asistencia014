@@ -1,5 +1,4 @@
-const mysql = require("mysql2/promise");
-const config = require("../../config/config");
+const mysqlPool = require('../../config/conexion');
 const { verifyToken } = require("../../utils/jwtUtils");
 
 exports.reporte_horas_individual = async (req, res) => {
@@ -16,9 +15,6 @@ exports.reporte_horas_individual = async (req, res) => {
     // Verificar y decodificar el token
     const decoded = verifyToken(token);
     const carne = decoded.carne; // Extraer el carné del token
-
-    // Conectar a la base de datos
-    const connection = await mysql.createConnection(config.db);
 
     // Consulta para obtener los horarios del auxiliar autenticado
     const query_marcaciones = `
@@ -109,17 +105,14 @@ ORDER BY hc.Total_horas_segundos DESC;
         `;
 
     // Ejecutar consultas
-    const [marcaciones] = await connection.execute(query_marcaciones, [carne]);
-    const [horas_acumuladas] = await connection.execute(
+    const [marcaciones] = await mysqlPool.execute(query_marcaciones, [carne]);
+    const [horas_acumuladas] = await mysqlPool.execute(
       query_horas_acumuladas,
       [carne]
     );
-    const [horas_por_fecha] = await connection.execute(query_horas_diarias, [
+    const [horas_por_fecha] = await mysqlPool.execute(query_horas_diarias, [
       carne,
     ]);
-
-    // Cerrar conexión después de obtener los datos
-    await connection.end();
 
     // Enviar respuesta con los datos obtenidos
     res.status(200).json({

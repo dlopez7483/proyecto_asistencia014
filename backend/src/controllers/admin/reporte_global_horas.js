@@ -1,10 +1,7 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
-const { query } = require('express');
+const mysqlPool = require('../../config/conexion');
 
 exports.reporte_global_horas = async (req, res) => {
     try {
-        const connection = await mysql.createConnection(config.db);
         const query_marcaciones = `
 SELECT
   a.Id_auxiliar,
@@ -25,7 +22,7 @@ INNER JOIN Asistencia_Salida s
 ORDER BY e.Fecha, a.Nombre, a.Apellido;
         `;
 
-query_horas_diarias = `
+const query_horas_diarias = `
 WITH horas_diarias AS (
   SELECT DISTINCT
     a.Id_auxiliar,
@@ -55,7 +52,7 @@ ORDER BY h.Id_auxiliar, h.Fecha;
 
 `;
 
-query_horas_acumuladas = `
+const query_horas_acumuladas = `
 WITH asistencias_completas AS (
   SELECT
     a.Id_auxiliar,
@@ -93,10 +90,9 @@ ORDER BY hc.Total_horas_segundos DESC;
 
 
 
-        const [filas] = await connection.execute(query_marcaciones);
-        const [filas2] = await connection.execute(query_horas_diarias);
-        const [filas3] = await connection.execute(query_horas_acumuladas);
-        await connection.end();
+        const [filas] = await mysqlPool.execute(query_marcaciones);
+        const [filas2] = await mysqlPool.execute(query_horas_diarias);
+        const [filas3] = await mysqlPool.execute(query_horas_acumuladas);
         res.status(200).json({
             marcaciones: filas , horas_por_fecha: filas2, horas_acumuladas: filas3
         });

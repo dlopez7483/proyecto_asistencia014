@@ -1,14 +1,11 @@
-const mysql = require('mysql2/promise');
-const config = require('../config/config');
+const mysqlPool = require('../config/conexion');
 
 // 🔹 Función de utilidad que obtiene el estado de las salidas extemporaneas
 exports.verificarEstadoSalidasExtemporaneas = async () => {
     try {
-      const connection = await mysql.createConnection(config.db);
       const query = `SELECT Periodo_horarios FROM Configuracion WHERE Id_configuracion = 2;`;
-      const [rows] = await connection.execute(query);
-      await connection.end();
-  
+      const [rows] = await mysqlPool.execute(query);
+
       // Retornar el estado (1 o 0) si se encontró un resultado válido
       return rows.length > 0 ? rows[0].Periodo_horarios : null;
     } catch (error) {

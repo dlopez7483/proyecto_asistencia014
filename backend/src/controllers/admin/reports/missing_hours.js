@@ -1,10 +1,7 @@
-const mysql = require('mysql2/promise');
-const config = require('../../../config/config');
+const mysqlPool = require('../../config/conexion');
 
 exports.reporteHorasFaltantes = async (req, res) => {
     try {
-        const connection = await mysql.createConnection(config.db);
-
         const query = `
             SELECT 
                 a.Id_auxiliar,
@@ -24,9 +21,7 @@ exports.reporteHorasFaltantes = async (req, res) => {
                 horas_faltantes > 0;
         `;
 
-        const [results] = await connection.execute(query);
-
-        await connection.end();
+        const [results] = await mysqlPool.execute(query);
 
         res.status(200).json({ reporte: results });
 

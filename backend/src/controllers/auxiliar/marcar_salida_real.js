@@ -1,14 +1,10 @@
 const { verificarEstadoSalidasExtemporaneas } = require("../status_salidas");
-const mysql = require("mysql2/promise");
-const config = require("../../config/config");
+const mysqlPool = require('../../config/conexion');
 
 exports.marcar_salida = async (req, res) => {
   const { rfid } = req.body;
 
   try {
-    const pool = mysql.createPool(config.db);
-    const connection = await pool.getConnection();
-
     const fecha = new Date();
 
     // Día de la semana
@@ -34,12 +30,11 @@ exports.marcar_salida = async (req, res) => {
     );
 
     // Obtener los horarios del auxiliar para ese día
-    const [rows] = await connection.query(
+    const [rows] = await mysqlPool.query(
       "CALL ObtenerHorariosAuxiliarPorRFID(?, ?)",
       [rfid, diaSemana]
     );
     if (rows[0].length === 0) {
-      connection.release();
       return res.status(400).json({
         mensaje: "No se encontraron horarios para el auxiliar en este día",
       });
@@ -60,7 +55,7 @@ exports.marcar_salida = async (req, res) => {
       console.log(idAuxiliar);
       console.log(idHorario);
       console.log(fechaHoy);
-      const [asistencia] = await connection.query(
+      const [asistencia] = await mysqlPool.query(
         "SELECT * FROM Asistencia_Entrada WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
         [idAuxiliar, idHorario, fechaHoy]
       );
@@ -72,7 +67,7 @@ exports.marcar_salida = async (req, res) => {
         entradaMarcada = true; // Marcamos que ya se registró la entrada
       }
 
-      const [asistenciaSalida] = await connection.query(
+      const [asistenciaSalida] = await mysqlPool.query(
         "SELECT * FROM Asistencia_Salida WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
         [idAuxiliar, idHorario, fechaHoy]
       );
@@ -104,7 +99,7 @@ exports.marcar_salida = async (req, res) => {
         const horaMarcacion = `${fechaHoy} ${horaActual}`; // Combina la fecha con la hora para el DATETIME
 
         // Insertar asistencia
-        await connection.query(
+        await mysqlPool.query(
           "INSERT INTO Asistencia_Salida (Id_auxiliar, Id_horario, Fecha, Hora_marcacion) VALUES (?, ?, ?, ?)",
           [idAuxiliar, idHorario, fechaHoy, horaMarcacion] // Ahora estamos usando un DATETIME
         );
@@ -124,8 +119,6 @@ exports.marcar_salida = async (req, res) => {
         );
       }
     }
-
-    connection.release();
 
     if (salidaMarcada) {
       res.status(200).json({ mensaje: "Salida marcada exitosamente" });

@@ -1,13 +1,5 @@
-const mysql = require('mysql2');
 const bcrypt = require('bcryptjs'); // Asegúrate de tener bcryptjs instalado
-
-// Crear la conexión a la base de datos
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
+const mysqlPool = require('../../config/conexion');
 
 exports.registerAuxiliar = async (req, res) => {
     const { nombre, apellido, carne, telefono, contrasenia, codigo_rfid, id_rol } = req.body;
@@ -20,18 +12,14 @@ exports.registerAuxiliar = async (req, res) => {
             INSERT INTO Auxiliar (Nombre, Apellido, Carne, Telefono, Contrasenia, Codigo_RFID, Id_rol)
             VALUES (?, ?, ?, ?, ?, ?, ?);
         `;
-        // Ejecutar la consulta usando db.execute (mysql2 utiliza execute para consultas preparadas)
-        db.execute(query, [nombre, apellido, carne, telefono, hashedPassword, codigo_rfid || null, id_rol], (error, results) => {
-            if (error) {
-                console.error('Error al registrar el usuario:', error);
-                return res.status(500).json({ mensaje: 'Error al registrar el usuario' });
-            }
-            // Aquí puedes manejar la respuesta después de la inserción
-            console.log('Usuario registrado exitosamente');
-            res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
-        });
+        // Ejecutar la consulta usando mysqlPool.execute (mysql2 utiliza execute para consultas preparadas)
+        await mysqlPool.execute(query, [nombre, apellido, carne, telefono, hashedPassword, codigo_rfid || null, id_rol]);
+        
+        // Aquí puedes manejar la respuesta después de la inserción
+        console.log('Usuario registrado exitosamente');
+        res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
     } catch (error) {
-        console.error('Error en el registro:', error);
-        res.status(500).json({ mensaje: 'Error en el servidor' });
+        console.error('Error al registrar el usuario:', error);
+        return res.status(500).json({ mensaje: 'Error al registrar el usuario' });
     }
 };

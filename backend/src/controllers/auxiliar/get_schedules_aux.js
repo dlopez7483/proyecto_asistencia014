@@ -1,5 +1,4 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 const { verifyToken } = require('../../utils/jwtUtils'); // Importar función para verificar el token
 
 exports.obtenerHorariosAuxiliarPersonal = async (req, res) => {
@@ -15,9 +14,6 @@ exports.obtenerHorariosAuxiliarPersonal = async (req, res) => {
         const decoded = verifyToken(token);
         const carne = decoded.carne; // Extraer el carné del token
 
-        // Conectar a la base de datos
-        const connection = await mysql.createConnection(config.db);
-
         // Consulta para obtener los horarios del auxiliar autenticado
         
         const query = `
@@ -28,10 +24,7 @@ exports.obtenerHorariosAuxiliarPersonal = async (req, res) => {
             WHERE A.Carne = ?;
         `;
 
-        const [rows] = await connection.execute(query, [carne]);
-
-        // Cerrar conexión
-        await connection.end();
+        const [rows] = await mysqlPool.execute(query, [carne]);
 
         // Si no hay horarios, devolver información del auxiliar sin horarios
         if (rows.length === 0) {

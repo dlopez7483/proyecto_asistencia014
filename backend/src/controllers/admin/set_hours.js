@@ -1,9 +1,7 @@
-const mysql = require("mysql2/promise");
-const config = require("../../config/config");
+const mysqlPool = require('../../config/conexion');
 
 exports.set_hours = async (req, res) => {
   try {
-    const connection = await mysql.createConnection(config.db);
     const { id_tutor, fecha, hora_entrada, hora_salida} = req.body;
 
     if (!id_tutor || !fecha || !hora_entrada || !hora_salida) {
@@ -16,7 +14,7 @@ exports.set_hours = async (req, res) => {
                 call registrarHorarioExtra(?, ?, ?, ?);
             `;
 
-    await connection.execute(InsertarHorarioExtraQuery, [
+    await mysqlPool.execute(InsertarHorarioExtraQuery, [
       id_tutor,
       fecha,
       hora_entrada,

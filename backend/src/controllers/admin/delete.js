@@ -1,5 +1,4 @@
-const mysql = require('mysql2/promise'); 
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 
 exports.deleteAuxiliar = async (req, res) => {
     const { carne } = req.params;
@@ -10,39 +9,32 @@ exports.deleteAuxiliar = async (req, res) => {
 
 
     try {
-        // Crear conexión a la base de datos
-        const connection = await mysql.createConnection(config.db);
-
         // Obtener el Id_auxiliar basado en el carne
         const queryGetId = `SELECT Id_auxiliar FROM Auxiliar WHERE carne = ?;`;
-        const [rows] = await connection.execute(queryGetId, [carne]);
+        const [rows] = await mysqlPool.execute(queryGetId, [carne]);
 
         if (rows.length === 0) {
-            await connection.end();
             return res.status(404).json({ mensaje: 'No se encontró un auxiliar con ese carne' });
         }
 
         const id_auxiliar = rows[0].Id_auxiliar;
 
         // Eliminar relaciones en auxiliar_horario
-        await connection.execute(`DELETE FROM Auxiliar_Horario WHERE Id_auxiliar = ?;`, [id_auxiliar]);
+        await mysqlPool.execute(`DELETE FROM Auxiliar_Horario WHERE Id_auxiliar = ?;`, [id_auxiliar]);
 
         // Obtener todos los Id_horario relacionados con el auxiliar
         const queryGetHorario = `SELECT Id_horario FROM Auxiliar_Horario WHERE Id_auxiliar = ?;`;
-        const [horarios] = await connection.execute(queryGetHorario, [id_auxiliar]);
+        const [horarios] = await mysqlPool.execute(queryGetHorario, [id_auxiliar]);
 
         if (horarios.length > 0) {
             const idsHorario = horarios.map(h => h.Id_horario);
             const queryDeleteHorario = `DELETE FROM Horario WHERE Id_horario IN (${idsHorario.map(() => '?').join(',')});`;
-            await connection.execute(queryDeleteHorario, idsHorario);
+            await mysqlPool.execute(queryDeleteHorario, idsHorario);
         }
 
         // Eliminar al auxiliar de la tabla `Auxiliar`
         const queryDeleteAuxiliar = `DELETE FROM Auxiliar WHERE Id_auxiliar = ?;`;
-        const [result] = await connection.execute(queryDeleteAuxiliar, [id_auxiliar]);
-
-        //await connection.commit(); // Confirmar transacción
-        await connection.end(); // Cerrar conexión
+        const [result] = await mysqlPool.execute(queryDeleteAuxiliar, [id_auxiliar]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ mensaje: 'No se encontró un auxiliar con ese carne' });

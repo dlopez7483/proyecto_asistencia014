@@ -1,10 +1,8 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 
 
 exports.crear_horario = async (req, res) => {
     try {
-         const connection = await mysql.createConnection(config.db);
          const { dia_semana, hora_entrada, hora_salida,carne} = req.body;
             if (!dia_semana || !hora_entrada || !hora_salida) {
                 return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
@@ -14,7 +12,7 @@ exports.crear_horario = async (req, res) => {
             SELECT Id_auxiliar FROM Auxiliar WHERE Carne = ?;
          `;
 
-         const [Id_auxiliar] = await connection.execute(obtener_id_aux, [carne]);
+         const [Id_auxiliar] = await mysqlPool.execute(obtener_id_aux, [carne]);
 
          const obtner_horarios_auxiliar = `
                SELECT
@@ -29,7 +27,7 @@ exports.crear_horario = async (req, res) => {
          `;
 
 
-         const [horariosAuxiliar] = await connection.execute(obtner_horarios_auxiliar, [Id_auxiliar[0].Id_auxiliar, dia_semana]);
+         const [horariosAuxiliar] = await mysqlPool.execute(obtner_horarios_auxiliar, [Id_auxiliar[0].Id_auxiliar, dia_semana]);
          
          for (let i = 0; i < horariosAuxiliar.length; i++) {
             const horario = horariosAuxiliar[i];
@@ -59,7 +57,6 @@ exports.crear_horario = async (req, res) => {
         
             // Verificar si el nuevo horario se solapa con los horarios existentes
             if (nuevaEntrada < salidaExistente && nuevaSalida > entradaExistente) {
-                await connection.destroy(); // Cerrar conexión
                 return res.status(400).json({ mensaje: 'El nuevo horario traslapa con un horario existente' });
             }
         }
@@ -67,15 +64,12 @@ exports.crear_horario = async (req, res) => {
          const agregarHorarioQuery = `
             INSERT INTO Horario (Dia_semana, Hora_entrada, Hora_salida) VALUES (?, ?, ?);
          `;
-         const [resultado] = await connection.execute(agregarHorarioQuery, [dia_semana, hora_entrada, hora_salida]);
+         const [resultado] = await mysqlPool.execute(agregarHorarioQuery, [dia_semana, hora_entrada, hora_salida]);
          const id_horario = resultado.insertId; // Obtener el ID del nuevo horario
          const agregarHorarioAuxQuery = `
                 INSERT INTO Auxiliar_Horario (Id_horario, Id_auxiliar) VALUES (?, ?);
             `;
-         await connection.execute(agregarHorarioAuxQuery, [id_horario, Id_auxiliar[0].Id_auxiliar]);
-
-         
-         connection.destroy(); // Cerrar conexión
+         await mysqlPool.execute(agregarHorarioAuxQuery, [id_horario, Id_auxiliar[0].Id_auxiliar]);
 
          res.status(200).json({ mensaje: 'Horario creado exitosamente' });
 
@@ -84,9 +78,3 @@ exports.crear_horario = async (req, res) => {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
 }
-// Cerrar el pool de conexiones si es necesario
-
-
-
-
-

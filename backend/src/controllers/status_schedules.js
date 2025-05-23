@@ -1,13 +1,10 @@
-const mysql = require('mysql2/promise');
-const config = require('../config/config');
+const mysqlPool = require('../config/conexion');
 
 // 🔹 Función de utilidad que obtiene el estado del período de horarios
 exports.verificarEstadoPeriodoHorarios = async () => {
     try {
-        const connection = await mysql.createConnection(config.db);
         const query = `SELECT Periodo_horarios FROM Configuracion WHERE Id_configuracion = 1;`;
-        const [rows] = await connection.execute(query);
-        await connection.end();
+        const [rows] = await mysqlPool.execute(query);
 
         // Retornar el estado (1 o 0) si se encontró un resultado válido
         return rows.length > 0 ? rows[0].Periodo_horarios : null;

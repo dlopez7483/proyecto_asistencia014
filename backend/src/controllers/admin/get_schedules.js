@@ -1,5 +1,4 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 
 exports.obtenerHorariosAuxiliar = async (req, res) => {
     try {
@@ -9,8 +8,6 @@ exports.obtenerHorariosAuxiliar = async (req, res) => {
             return res.status(400).json({ mensaje: 'El número de carné es obligatorio' });
         }
 
-        const connection = await mysql.createConnection(config.db);
-
         // Primero obtenemos los datos del auxiliar
         const queryAuxiliar = `
             SELECT Carne, Nombre, Codigo_RFID
@@ -18,10 +15,9 @@ exports.obtenerHorariosAuxiliar = async (req, res) => {
             WHERE Carne = ?;
         `;
 
-        const [auxiliar] = await connection.execute(queryAuxiliar, [carne]);
+        const [auxiliar] = await mysqlPool.execute(queryAuxiliar, [carne]);
 
         if (auxiliar.length === 0) {
-            await connection.end();
             return res.status(404).json({ mensaje: 'El auxiliar no existe' });
         }
 
@@ -34,8 +30,7 @@ exports.obtenerHorariosAuxiliar = async (req, res) => {
             WHERE A.Carne = ?;
         `;
 
-        const [horarios] = await connection.execute(queryHorarios, [carne]);
-        await connection.end();
+        const [horarios] = await mysqlPool.execute(queryHorarios, [carne]);
 
         // Construimos la respuesta
         const respuesta = {

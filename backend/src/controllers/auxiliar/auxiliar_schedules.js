@@ -1,5 +1,4 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 const { verificarEstadoPeriodoHorarios } = require('../status_schedules');
 const { verifyToken } = require('../../utils/jwtUtils'); // Importar función para verificar el token
 
@@ -43,8 +42,7 @@ exports.agregarHorarioPracticante = async (req, res) => {
          `;
          
         // Conectar a la base de datos
-        const connection = await mysql.createConnection(config.db);
-        const [horariosAuxiliar] = await connection.execute(obtner_horarios_auxiliar, [id_auxiliar, dia_semana]);
+        const [horariosAuxiliar] = await mysqlPool.execute(obtner_horarios_auxiliar, [id_auxiliar, dia_semana]);
         console.log('Horarios del auxiliar:', horariosAuxiliar);
         for (let i = 0; i < horariosAuxiliar.length; i++) {
             const horario = horariosAuxiliar[i];
@@ -74,7 +72,6 @@ exports.agregarHorarioPracticante = async (req, res) => {
         
             // Verificar si el nuevo horario se solapa con los horarios existentes
             if (nuevaEntrada < salidaExistente && nuevaSalida > entradaExistente) {
-                await connection.destroy(); // Cerrar conexión
                 return res.status(400).json({ mensaje: 'El nuevo horario traslapa con un horario existente' });
             }
         }
@@ -87,7 +84,7 @@ exports.agregarHorarioPracticante = async (req, res) => {
             INSERT INTO Horario (Dia_semana, Hora_entrada, Hora_salida)
             VALUES (?, ?, ?);
         `;
-        const [horarioResult] = await connection.execute(queryInsertHorario, [dia_semana, hora_entrada, hora_salida]);
+        const [horarioResult] = await mysqlPool.execute(queryInsertHorario, [dia_semana, hora_entrada, hora_salida]);
         const id_horario = horarioResult.insertId; // Guardamos el ID del horario insertado
 
         // Asociar el horario con el auxiliar autenticado
@@ -100,12 +97,8 @@ exports.agregarHorarioPracticante = async (req, res) => {
             INSERT INTO Auxiliar_Horario (Id_auxiliar, Id_horario)
             VALUES (?, ?);
         `;
-        await connection.execute(queryInsertAuxiliarHorario, [id_auxiliar, id_horario]);
+        await mysqlPool.execute(queryInsertAuxiliarHorario, [id_auxiliar, id_horario]);
         
-
-        // Cerrar conexión
-        await connection.end();
-
         res.status(200).json({ mensaje: 'Horario agregado y asignado exitosamente al auxiliar' });
 
     } catch (error) {

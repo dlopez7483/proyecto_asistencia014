@@ -1,5 +1,4 @@
-const mysql = require('mysql2/promise');
- const config = require('../config/config');
+const mysqlPool = require('../config/conexion');
  const bcrypt = require('bcryptjs');
  const jwt = require('jsonwebtoken');
  const { generateToken } = require('../utils/jwtUtils')
@@ -13,7 +12,6 @@ const mysql = require('mysql2/promise');
      }
  
      try {
-         const connection = await mysql.createConnection(config.db);
          let query = '';
          let params = [];
  
@@ -26,8 +24,7 @@ const mysql = require('mysql2/promise');
          } else {
              return res.status(400).json({ mensaje: 'Rol no válido' });
          }
-         const [results] = await connection.execute(query, params);
-         await connection.end();
+         const [results] = await mysqlPool.execute(query, params);
          if (results.length > 0) {
              const auxiliar = results[0];
              const isPasswordValid = await bcrypt.compare(contrasena, auxiliar.Contrasenia);

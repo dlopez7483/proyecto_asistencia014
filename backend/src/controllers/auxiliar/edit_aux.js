@@ -1,5 +1,4 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 const bcrypt = require('bcryptjs');
 
 
@@ -10,9 +9,6 @@ exports.edit_aux = async (req, res) => {
     const { nombre, apellido, telefono, contrasenia, codigo_rfid, id_rol, carne_nuevo } = req.body;
     
     try {
-        const connection = await mysql.createConnection(config.db);
-        
-
         const fields = [];
         const values = [];
     
@@ -55,7 +51,7 @@ exports.edit_aux = async (req, res) => {
         values.push(carne);
     
 
-        await connection.execute(query, values);
+        await mysqlPool.execute(query, values);
         
         console.log("Usuario actualizado exitosamente");
         res.status(200).json({ mensaje: "Usuario actualizado exitosamente" });

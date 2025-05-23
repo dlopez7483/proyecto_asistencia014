@@ -1,10 +1,7 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 
 exports.getAllSchedules = async (req, res) => {
     try {
-        const connection = await mysql.createConnection(config.db);
-
         // Ahora obtenemos los horarios asociados
         const queryHorarios = `
             SELECT H.Id_horario, H.Dia_semana, H.Hora_entrada, H.Hora_salida, A.Carne, A.Nombre, A.Apellido
@@ -13,8 +10,7 @@ exports.getAllSchedules = async (req, res) => {
             JOIN Horario H ON AH.Id_horario = H.Id_horario;
         `;
 
-        const [horarios] = await connection.execute(queryHorarios);
-        await connection.end();
+        const [horarios] = await mysqlPool.execute(queryHorarios);
 
         // Construimos la respuesta
         const respuesta = {

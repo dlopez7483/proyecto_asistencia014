@@ -1,5 +1,4 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 const { verifyToken } = require('../../utils/jwtUtils'); // Importar función para verificar el token
 
 exports.editarHorario = async (req, res) => {
@@ -30,15 +29,12 @@ exports.editarHorario = async (req, res) => {
             return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
         }
 
-        // Conectar a la base de datos
-        const connection = await mysql.createConnection(config.db);
-
         // Obtener el id_auxiliar a partir del carne ya que no tenemos el carne en la tabla auxiliar_horario
 
         const queryGetIdAuxiliar = `
             SELECT Id_auxiliar FROM Auxiliar WHERE Carne = ?
         `;
-        const [auxiliarResults] = await connection.execute(queryGetIdAuxiliar, [carne]);
+        const [auxiliarResults] = await mysqlPool.execute(queryGetIdAuxiliar, [carne]);
 
         if (auxiliarResults.length === 0) {
             return res.status(404).json({ mensaje: 'Auxiliar no encontrado con ese carne' });
@@ -51,7 +47,7 @@ exports.editarHorario = async (req, res) => {
             SELECT * FROM Auxiliar_Horario
             WHERE Id_auxiliar = ? AND Id_horario = ?
         `;
-        const [checkResults] = await connection.execute(queryCheckHorario, [id_auxiliar, id_horario]);
+        const [checkResults] = await mysqlPool.execute(queryCheckHorario, [id_auxiliar, id_horario]);
 
         if (checkResults.length === 0) {
             return res.status(404).json({ mensaje: 'El horario no existe para este auxiliar' });
@@ -63,14 +59,13 @@ exports.editarHorario = async (req, res) => {
             SET Dia_semana = ?, Hora_entrada = ?, Hora_salida = ?
             WHERE Id_horario = ?
         `;
-        await connection.execute(queryUpdateHorario, [
+        await mysqlPool.execute(queryUpdateHorario, [
             dia_semana, 
             hora_entrada,
             hora_salida,
             id_horario
         ]);
 
-        await connection.end();
         res.status(200).json({ mensaje: 'Horario actualizado correctamente' });
 
     } catch (error) {

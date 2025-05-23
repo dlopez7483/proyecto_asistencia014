@@ -1,13 +1,9 @@
-const mysql = require('mysql2/promise');
-const config = require('../../config/config');
+const mysqlPool = require('../../config/conexion');
 
 exports.marcar_entrada = async (req, res) => {
     const { rfid } = req.body;
     
     try {
-        const pool = mysql.createPool(config.db);
-        const connection = await pool.getConnection();
-
         // Establecer la zona horaria de Guatemala (UTC-6)
         const fecha = new Date();
 
@@ -21,9 +17,8 @@ exports.marcar_entrada = async (req, res) => {
         console.log(fecha.toLocaleString('en-US', { timeZone: 'America/Guatemala' }));
 
         // Obtener los horarios del auxiliar para ese día
-        const [rows] = await connection.query("CALL ObtenerHorariosAuxiliarPorRFID(?, ?)", [rfid, diaSemana]);
+        const [rows] = await mysqlPool.query("CALL ObtenerHorariosAuxiliarPorRFID(?, ?)", [rfid, diaSemana]);
         if (rows[0].length === 0) {
-            connection.release();
             return res.status(400).json({ mensaje: "No se encontraron horarios para el auxiliar en este día" });
         }
 
@@ -39,7 +34,7 @@ exports.marcar_entrada = async (req, res) => {
             const idHorario = horario.Id_horario;
 
             // Verificar si ya marcó asistencia en ese horario
-            const [asistencia] = await connection.query(
+            const [asistencia] = await mysqlPool.query(
                 "SELECT * FROM Asistencia_Entrada WHERE Id_auxiliar = ? AND Id_horario = ? AND Fecha = ?",
                 [idAuxiliar, idHorario, fechaHoy]
             );
@@ -63,7 +58,7 @@ exports.marcar_entrada = async (req, res) => {
                 const horaMarcacion = `${fechaHoy} ${horaActual}`; // Combina la fecha con la hora para el DATETIME
 
                 // Insertar asistencia
-                await connection.query(
+                await mysqlPool.query(
                     "INSERT INTO Asistencia_Entrada (Id_auxiliar, Id_horario, Fecha, Hora_marcacion) VALUES (?, ?, ?, ?)",
                     [idAuxiliar, idHorario, fechaHoy, horaMarcacion] // Ahora estamos usando un DATETIME
                 );
@@ -73,8 +68,6 @@ exports.marcar_entrada = async (req, res) => {
                 break; // Si ya se marcó la entrada, salimos del bucle
             }
         }
-
-        connection.release();
 
         if (entradaMarcada) {
             res.status(200).json({ mensaje: "Entrada marcada exitosamente" });

@@ -1,5 +1,4 @@
-const mysql = require("mysql2/promise");
-const config = require("../../config/config");
+const mysqlPool = require('../../config/conexion');
 const { verificarEstadoPeriodoHorarios } = require('../status_schedules');
 const { verifyToken } = require('../../utils/jwtUtils'); // Importar función para verificar el token
 
@@ -17,9 +16,6 @@ exports.delete_horario = async (req, res) => {
     // Verificar y decodificar el token
     const decoded = verifyToken(token);
     const params = req.params;
-
-    // Conectar a la base de datos
-    const connection = await mysql.createConnection(config.db);
 
     // Verificamos si el periodo para agregar horarios está activado
     const estadoPeriodo = await verificarEstadoPeriodoHorarios();
@@ -39,10 +35,7 @@ exports.delete_horario = async (req, res) => {
 
     // Eliminar relaciones en auxiliar_horario
     const delete_auxiliar_horario = `DELETE FROM Auxiliar_Horario WHERE Id_horario = ?;`;
-    await connection.execute(delete_auxiliar_horario, [params.Id_horario]);
-
-    // Cerrar conexión
-    await connection.end();
+    await mysqlPool.execute(delete_auxiliar_horario, [params.Id_horario]);
 
     res.status(200).json({ mensaje: "Horario eliminado" });
   } catch (error) {
