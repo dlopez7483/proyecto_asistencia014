@@ -1,0 +1,85 @@
+import { createBrowserRouter, Navigate } from "react-router-dom";
+
+import Login from "@pages/login";
+import Administrador from "@pages/usuarios/administrador";
+import Tutor from "@pages/usuarios/tutor";
+import AdminTutores from "@pages/usuarios/administrador/tutores";
+import AdminHorarios from "@pages/usuarios/administrador/horarios";
+import Reportes from "@pages/usuarios/administrador/reportes";
+import Perfil from "@pages/usuarios/administrador/perfil";
+import ReporteIndividual from "@pages/usuarios/tutor/reportes/ReporteIndividual";
+import VerHorario from "@pages/usuarios/tutor/horario/verhorario";
+import TutorVerification from "@common/components/TutorVerification";
+import AdminVerification from "@common/components/AdminVerification";
+import PerfilAux from "@pages/usuarios/tutor/perfil/Perfil";
+//import AuthVerification from "@common/components/AuthVerification";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      //<AuthVerification>
+      <Login />
+      //</AuthVerification>
+    ),
+    errorElement: <div>404</div>,
+  },
+  {
+    path: "dashboard-admin",
+    element: (
+      <AdminVerification>
+        <Administrador />
+      </AdminVerification>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Navigate to="tutores" />,
+      },
+      {
+        path: "tutores",
+        element: <AdminTutores />,
+      },
+      {
+        path: "horarios",
+        element: <AdminHorarios />,
+      },
+      {
+        path: "reportes",
+        element: <Reportes />,
+      },
+      {
+        path: "perfil",
+        element: <Perfil />,
+      },
+    ],
+  },
+  {
+    path: "dashboard-tutor",
+    element: (
+      <TutorVerification>
+        <Tutor />
+      </TutorVerification>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Navigate to="horarios" />,
+      },
+      {
+        path: "horarios",
+        element: <VerHorario />,
+      },
+      {
+        path: "reportes",
+        element: <ReporteIndividual />,
+      },
+      {
+        path: "perfil",
+        element: <PerfilAux />,
+      }
+    ],
+  },
+]);
+
+export { router };

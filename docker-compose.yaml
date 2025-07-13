@@ -1,0 +1,40 @@
+services:
+  # asistenciadb:
+  #   image: mysql:latest
+  #   container_name: asistenciadb
+  #   restart: "on-failure"
+  #   env_file: ./db/.env
+  #   networks:
+  #     - asistencia_network
+  #   ports:
+  #     - "3307:3306"
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
+
+  asistenciabackend:
+    restart: "on-failure"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: asistenciabackend
+    env_file: ./backend/.env
+    networks:
+      - asistencia_network
+    #ports:
+    #  - "5000:5000"
+
+  asistenciafrontend:
+    restart: "on-failure"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: asistenciafrontend
+    depends_on:
+      - asistenciabackend
+    networks:
+      - asistencia_network
+    ports:
+      - "3014:80"
+
+networks:
+  asistencia_network:

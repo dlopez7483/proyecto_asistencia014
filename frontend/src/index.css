@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.swal2-container {
+    z-index: 9999;
+}
